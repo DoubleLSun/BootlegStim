@@ -1,1 +1,67 @@
 *.sqlite*
+# ========================
+# Environment & Secrets
+# ========================
+.env
+.env.*.local
+.env.local
+.env.testing
+
+# ========================
+# Dependencies
+# ========================
+/vendor/
+/node_modules/
+
+# ========================
+# Build / Compiled Assets
+# ========================
+/public/build
+/public/hot
+/public/storage
+
+# ========================
+# Laravel Storage (generated files)
+# ========================
+/storage/*.key
+/storage/app/*
+!/storage/app/public
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+
+# ========================
+# Cache & System Files
+# ========================
+bootstrap/cache/*
+!bootstrap/cache/.gitignore
+
+# ========================
+# OS / Editor Files
+# ========================
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+
+# JetBrains (PhpStorm, IntelliJ)
+.idea/
+
+# ========================
+# Testing / Coverage
+# ========================
+/coverage
+/phpunit.xml.result.cache
+
+# ========================
+# Logs
+# ========================
+*.log
+
+# ========================
+# Misc
+# ========================
+npm-debug.log*
+yarn-error.log*

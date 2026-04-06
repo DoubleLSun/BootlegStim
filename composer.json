@@ -45,6 +45,14 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "seed:games": [
+            "@php artisan db:seed --class=Database\\Seeders\\GameSeeder --ansi"
+        ],
+        "setup": [
+            "copy .env.example .env",
+            "php artisan key:generate",
+            "php artisan migrate --seed"
         ]
     },
     "extra": {
