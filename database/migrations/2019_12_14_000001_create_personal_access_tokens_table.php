@@ -13,6 +13,7 @@ class CreatePersonalAccessTokensTable extends Migration
      */
     public function up()
     {
+        if(Schema::hasTable("")){
         Schema::create('personal_access_tokens', function (Blueprint $table) {
             $table->id();
             $table->morphs('tokenable');
@@ -22,6 +23,7 @@ class CreatePersonalAccessTokensTable extends Migration
             $table->timestamp('last_used_at')->nullable();
             $table->timestamps();
         });
+        };
     }
 
     /**

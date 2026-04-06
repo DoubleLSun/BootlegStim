@@ -24,20 +24,21 @@ class CreateGamesTable extends Migration
         * - created_by (admin_id)
         * - cover_image
          */
-        Schema::create('games', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->text('description');
-            $table->decimal('price', 10, 2);
-            $table->date('release_date');
-            $table->boolean('is_featured')->default(false);
-            $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('developer_id');
-            $table->unsignedBigInteger('publisher_id');
-            $table->string('cover_image')->nullable();
-            $table->
-            $table->timestamps();
-        });
+        if(!Schema::hasTable("games")){
+            Schema::create('games', function (Blueprint $table) {
+                $table->id();
+                $table->string('title');
+                $table->text('description');
+                $table->decimal('price', 10, 2);
+                $table->date('release_date');
+                $table->boolean('is_featured')->default(false);
+                $table->unsignedBigInteger('created_by');
+                $table->unsignedBigInteger('developer_id');
+                $table->unsignedBigInteger('publisher_id');
+                $table->string('cover_image')->nullable();
+                $table->timestamps();
+            });
+        };
     }
 
     /**

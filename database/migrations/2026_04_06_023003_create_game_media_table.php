@@ -23,6 +23,7 @@ class CreateGameMediaTable extends Migration
         * - sort_order   
         * - is_cover     
          */
+        if(!Schema::hasTable("game_media")){
         Schema::create('game_media', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('game_id');
@@ -33,6 +34,7 @@ class CreateGameMediaTable extends Migration
             $table->boolean('is_cover')->default(false);
             $table->timestamps();
         });
+        };
     }
 
     /**
