@@ -56,6 +56,7 @@ body {
     border: 1px solid var(--line);
     border-radius: 18px;
     box-shadow: var(--shadow);
+    /* overflow: hidden;  */
 }
 
 .primary-gallery {
@@ -74,6 +75,7 @@ body {
 
 .selected-image-shell.is-highlighted {
     border-color: var(--brand);
+    /* max-width: 100%; */
 }
 
 .selected-image-shell img {
@@ -151,6 +153,16 @@ body {
     padding: 0.9rem;
     max-width: 100%;
     width: 100%;
+}
+
+.showcase-section {
+    max-width: 100%;
+    height: auto;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--line);
+}
+.showcase-section img {
+    max-width: 100%;
 }
 
 .showcase-title {

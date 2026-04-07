@@ -9,9 +9,12 @@
 <body>
 	@php
 		$mediaCollection = collect($mediaItems ?? []);
-		$defaultMedia = $mediaCollection->firstWhere('is_cover', true)
-			?? $mediaCollection->first();
-		$defaultImage = optional($defaultMedia)->url ?? $game->cover_image ?? 'https://via.placeholder.com/1200x675?text=No+Image';
+		$selectedImage = $selectedImage
+			?? optional($mediaCollection->firstWhere('is_cover', true))->url
+			?? optional($mediaCollection->first())->url
+			?? $game->cover_image
+			?? 'https://via.placeholder.com/1200x675?text=No+Image';
+		$activeThumbId = $activeThumbId ?? null;
 	@endphp
 
 	<main class="page-wrap">
@@ -20,10 +23,11 @@
 
 		<section class="media-section" aria-label="Game media gallery and showcase">
 			<article class="primary-gallery">
-				<div class="selected-image-shell" id="selectedImageShell">
+				<!-- Selected image preview -->
+				<div class="selected-image-shell {{ $activeThumbId ? 'is-highlighted' : '' }}" id="selectedImageShell">
 					<img
 						id="selectedImage"
-						src="{{ $defaultImage }}"
+						src="{{ $selectedImage }}"
 						alt="Selected media preview for {{ $game->title }}"
 					>
 					<span class="selected-state" id="selectedState">Selected</span>
@@ -32,15 +36,13 @@
 				@if ($mediaCollection->isNotEmpty())
 					<div class="thumb-strip" id="thumbStrip" aria-label="Scrollable image options">
 						@foreach ($mediaCollection as $media)
-							<button
-								type="button"
-								class="thumb-button"
-								data-image-url="{{ $media->url }}"
-								data-thumb-id="{{ $media->id }}"
+							<a
+								href="{{ route('games.show', ['game' => $game, 'toggle_media' => $media->id, 'active_thumb_id' => $activeThumbId]) }}"
+								class="thumb-button {{ (string) $activeThumbId === (string) $media->id ? 'is-active' : '' }}"
 								aria-label="Select image {{ $loop->iteration }}"
 							>
 								<img src="{{ $media->thumbnail_url ?? $media->url }}" alt="Game thumbnail {{ $loop->iteration }}">
-							</button>
+							</a>
 						@endforeach
 					</div>
 				@else
@@ -48,60 +50,40 @@
 				@endif
 			</article>
 
-			<aside class="showcase-panel" aria-label="Small horizontal image showcase">
-				<h2 class="showcase-title">Image Showcase</h2>
+			<aside class="showcase-panel" aria-label="Game details summary panel">
+				<h2 class="showcase-title">Game Summary</h2>
 
-				@if ($mediaCollection->isNotEmpty())
-					<div class="showcase-track">
-						@foreach ($mediaCollection as $media)
-							<figure class="showcase-item" style="animation-delay: {{ $loop->index * 70 }}ms;">
-								<img src="{{ $media->thumbnail_url ?? $media->url }}" alt="Showcase image {{ $loop->iteration }}">
-								<span>{{ $game->title }} - #{{ $loop->iteration }}</span>
-							</figure>
-						@endforeach
-					</div>
-				@else
-					<p class="empty-note">No showcase items available.</p>
-				@endif
+				<section class="showcase-section" aria-label="Main cover image">
+					<img src="{{ $selectedImage }}" alt="Main cover image for {{ $game->title }}">
+				</section>
+
+				<section class="showcase-section" aria-label="Game description">
+					<h3>Description</h3>
+					<p>{{ $game->description ?: 'No description available yet.' }}</p>
+				</section>
+
+				<section class="showcase-section" aria-label="Review summary">
+					<h3>Review Summary</h3>
+					<p>Placeholder: Review summary is not implemented yet.</p>
+				</section>
+
+				<section class="showcase-section" aria-label="Release date">
+					<h3>Release Date</h3>
+					<p>{{ $game->release_date ? \Illuminate\Support\Carbon::parse($game->release_date)->format('F j, Y') : 'TBA' }}</p>
+				</section>
+
+				<section class="showcase-section" aria-label="Developer and publisher">
+					<h3>Developer / Publisher</h3>
+					<p>Developer ID: {{ $game->developer_id ?? 'N/A' }}</p>
+					<p>Publisher ID: {{ $game->publisher_id ?? 'N/A' }}</p>
+				</section>
+
+				<section class="showcase-section" aria-label="Genres and tags">
+					<h3>Genres / Tags</h3>
+					<p>Placeholder: Genres and tags are not implemented yet.</p>
+				</section>
 			</aside>
 		</section>
 	</main>
-
-	<script>
-		(function () {
-			const selectedImage = document.getElementById('selectedImage');
-			const selectedShell = document.getElementById('selectedImageShell');
-			const thumbButtons = Array.from(document.querySelectorAll('.thumb-button'));
-
-			if (!selectedImage || thumbButtons.length === 0) {
-				return;
-			}
-
-			const defaultImageUrl = selectedImage.getAttribute('src');
-			let activeThumbId = null;
-
-			thumbButtons.forEach((button) => {
-				button.addEventListener('click', () => {
-					const imageUrl = button.getAttribute('data-image-url');
-					const thumbId = button.getAttribute('data-thumb-id');
-					const isSameActive = activeThumbId === thumbId;
-
-					thumbButtons.forEach((item) => item.classList.remove('is-active'));
-
-					if (isSameActive) {
-						activeThumbId = null;
-						selectedImage.setAttribute('src', defaultImageUrl);
-						selectedShell.classList.remove('is-highlighted');
-						return;
-					}
-
-					activeThumbId = thumbId;
-					selectedImage.setAttribute('src', imageUrl || defaultImageUrl);
-					button.classList.add('is-active');
-					selectedShell.classList.add('is-highlighted');
-				});
-			});
-		})();
-	</script>
 </body>
 </html>

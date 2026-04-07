@@ -24,6 +24,14 @@ jobs:
           --health-timeout=5s
           --health-retries=3
 
+      frontend:
+        image: node:latest
+        volumes:
+          - .:/app
+        command: ["npm", "run", "dev"]
+        ports:
+          - 3000:3000
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
