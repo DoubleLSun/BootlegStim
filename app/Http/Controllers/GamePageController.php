@@ -14,7 +14,7 @@ class GamePageController extends Controller
                 ->orderBy('sort_order')
                 ->orderBy('id');
         }]);
-
+        
         return view('games.gamesPage', [
             'game' => $game,
             'mediaItems' => $game->getMedia,
