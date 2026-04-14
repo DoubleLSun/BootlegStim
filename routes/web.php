@@ -25,9 +25,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
 // --- main store page  ---//
 Route::get('/', [StoreController::class, 'index'])->name('store.index');
 
