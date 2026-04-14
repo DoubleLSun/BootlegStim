@@ -16,6 +16,7 @@
         "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.9.1",
         "laravel/sail": "^1.0.1",
+        "laravel/ui": "3.4",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^5.10",
         "phpunit/phpunit": "^9.5.10"
@@ -52,7 +53,12 @@
         "setup": [
             "copy .env.example .env",
             "php artisan key:generate",
-            "php artisan migrate --seed"
+            "php artisan migrate --seed",
+            "@php -r \"$cmd = version_compare(PHP_VERSION, '8.0.0', '>=') ? 'composer require laravel/ui:^4.0 --dev' : 'composer require laravel/ui:^3.4 --dev'; passthru($cmd, $code); exit($code);\"",
+            "@php artisan ui react --auth",
+            "npm install reactstrap react react-dom",
+            "npm install --save bootstrap",
+            "npm install axios"
         ]
     },
     "extra": {

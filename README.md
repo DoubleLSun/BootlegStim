@@ -70,4 +70,6 @@ University student's project, this project uses Laravel as the main development 
 1. You must have a database named "bootlegstim" set up first
 2. Run <code>composer run setup</code>
 
-
+# Docker Deployment
+1. Deploy and build docker image first 
+<code>docker compose -f docker-compose.prod.yml up --build -d</code>

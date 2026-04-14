@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    volumes:
+      - .:/var/www
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - .:/var/www
+      - ./docker/nginx:/etc/nginx/conf.d
+    ports:
+      - "8000:80"
+    depends_on:
+      - app
+
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: bootlegstim
+      MYSQL_ROOT_PASSWORD: root

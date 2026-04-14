@@ -117,28 +117,45 @@ class GameSeeder extends Seeder
         ];
 
         foreach ($games as $gameData) {
+            // Extract media data and remove it from the game data array to avoid issues when inserting into the games table
             $media = $gameData['media'];
             unset($gameData['media']);
 
             $gameData['created_at'] = $now;
             $gameData['updated_at'] = $now;
 
-            $gameId = DB::table('games')->insertGetId($gameData);
 
-            $mediaRows = array_map(function ($item) use ($gameId, $now) {
-                return [
-                    'game_id' => $gameId,
-                    'type' => $item['type'],
-                    'url' => $item['url'],
-                    'thumbnail_url' => $item['thumbnail_url'],
-                    'sort_order' => $item['sort_order'],
-                    'is_cover' => $item['is_cover'],
-                    'created_at' => $now,
-                    'updated_at' => $now,
-                ];
-            }, $media);
+            // Check if a game with the same title already exists in the database, if so skip to avoid duplicate entries when running seeder multiple times
+            $gameId = DB::table('games')->updateOrInsert(
+                ['title' => $gameData['title']],$gameData
+            );
 
-            DB::table('game_media')->insert($mediaRows);
+            $gameId = DB::table('games')
+            ->where('title', $gameData['title'])
+            ->value('id');
+        
+            /** 
+             * Media entries duplicate check: check if the media entries for the same game
+             * with the same type, url, thumbnail_url, sort_order, and is_cover 
+             * already exist in the database, if so skip to avoid duplicate entries when
+             * running seeder multiple times
+             * */ 
+            foreach ($media as $item) {
+                DB::table('game_media')->updateOrInsert(
+                    [
+                        'game_id' => $gameId,
+                        'type' => $item['type'],
+                        'url' => $item['url'],
+                    ],
+                    [
+                        'thumbnail_url' => $item['thumbnail_url'],
+                        'sort_order' => $item['sort_order'],
+                        'is_cover' => $item['is_cover'],
+                        'updated_at' => $now,
+                        'created_at' => $now,
+                    ]
+                );
+            }
         }
     }
 }

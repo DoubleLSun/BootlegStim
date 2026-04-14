@@ -1,0 +1,89 @@
+name: Production Docker Deploy Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  prod-deploy-smoke-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # set up environment variables for testing, randomized APP_KEY is generated in the entrypoint script if not provided
+      - name: Prepare environment file
+        run: |
+          cp .env.example .env
+          echo "APP_ENV=production" >> .env
+          echo "APP_DEBUG=false" >> .env
+          echo "DB_CONNECTION=mysql" >> .env
+          echo "APP_KEY=base64:$(openssl rand -base64 32)" >> .env
+
+      - name: Validate docker compose configuration
+        run: docker compose -f docker-compose.prod.yml config
+
+      - name: Build and start production stack
+        run: docker compose -f docker-compose.prod.yml up -d --build
+
+      - name: Wait for mysql and php-fpm to become healthy
+        shell: bash
+        run: |
+          set -euo pipefail
+          for service in mysql php-fpm; do
+            echo "Waiting for ${service} health status..."
+            for i in {1..60}; do
+              container_id=$(docker compose -f docker-compose.prod.yml ps -q "${service}")
+              if [ -z "${container_id}" ]; then
+                echo "Container for ${service} not found yet..."
+                sleep 2
+                continue
+              fi
+
+              status=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "${container_id}")
+              echo "${service} status: ${status}"
+              if [ "${status}" = "healthy" ]; then
+                break
+              fi
+
+              if [ "${i}" -eq 60 ]; then
+                echo "${service} did not become healthy in time"
+                docker compose -f docker-compose.prod.yml logs "${service}" --tail=200
+                exit 1
+              fi
+
+              sleep 2
+            done
+          done
+
+      - name: Verify web endpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          for i in {1..40}; do
+            if curl -fsS http://localhost >/dev/null; then
+              echo "Web endpoint is reachable"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Web endpoint did not become reachable"
+          docker compose -f docker-compose.prod.yml logs web --tail=200
+          exit 1
+
+      - name: Show service status
+        if: always()
+        run: docker compose -f docker-compose.prod.yml ps
+
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose -f docker-compose.prod.yml logs --tail=300
+
+      - name: Tear down stack
+        if: always()
+        run: docker compose -f docker-compose.prod.yml down -v

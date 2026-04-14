@@ -1,0 +1,48 @@
+[33m3af115b[m[33m ([m[1;32mmaster[m[33m)[m Initial commit
+[33me1f37fc[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mProfilePage[m[33m, [m[1;31morigin/ProfilePage[m[33m)[m Delete BootlegStim-main directory
+[33m964ce52[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Delete BootlegStim directory
+[33m9bb3a7b[m Added profile page
+[33m82abd19[m Delete BootlegStim-main directory
+[33mb475a5c[m Merge pull request #13 from DoubleLSun/ProfilePage
+[33m34dcf1f[m Merge pull request #12 from DoubleLSun/GamesPage
+[33mfacdbde[m[33m ([m[1;31morigin/GamesPage[m[33m)[m Nav bar & UI color update
+[33m733c9a0[m Added profile page
+[33m02eda0b[m Merge pull request #11 from DoubleLSun/GamesPage
+[33m481e787[m Merge branch 'main' of https://github.com/DoubleLSun/BootlegStim into GamesPage
+[33m2ba8ed2[m final fucking fix
+[33m3f3f985[m Merge pull request #10 from DoubleLSun/GamesPage
+[33mbbb7a46[m randomly generate APP_KEY for every container test build
+[33m5be17f9[m Merge pull request #9 from DoubleLSun/GamesPage
+[33m67e79f3[m docker container .env file read only fixed
+[33maf5bd8f[m Merge pull request #8 from DoubleLSun/GamesPage
+[33m470809f[m attempt to fix php-fpm missing .env file in container
+[33mb71559d[m Merge pull request #7 from DoubleLSun/GamesPage
+[33m96b2cd2[m Added one more quick check step to docker-test workflow
+[33mc378958[m Docker production deployment setup
+[33ma395bda[m Merge pull request #6 from DoubleLSun/GamesPage
+[33m38dd1a4[m Pricing table backend
+[33m1d4ceb9[m Pricing and Review section UI+Backend
+[33maee60d6[m game page media section UI done
+[33ma3549cb[m[33m ([m[1;31morigin/MainStorePage[m[33m)[m minor npm frontend dev workflow commands
+[33m96ebfd9[m Merge pull request #5 from DoubleLSun/GamesPage
+[33m1af64de[m added npm run build workflow and fix gamepage UI
+[33ma3bdc1d[m added side description of game page
+[33mc63ee13[m Merge pull request #4 from DoubleLSun/GamesPage
+[33mec73bbc[m Merge branch 'main' of https://github.com/DoubleLSun/BootlegStim into GamesPage synchronize action
+[33m0f435f9[m add back password root
+[33mf0d8c63[m Merge pull request #3 from DoubleLSun/GamesPage
+[33md8b3d4d[m Merge branch 'main' of https://github.com/DoubleLSun/BootlegStim into GamesPage synchronize changes from main
+[33mf9478af[m fix .gtihub directory typo
+[33ma872b01[m update the default db password in workflow
+[33m1963709[m Merge pull request #2 from DoubleLSun/GamesPage
+[33mea90b0a[m CI workflow added
+[33mbb8c18b[m reformat css files to separate resource folders
+[33m4afe17e[m merge syntax fix for games store page from DoubleLSun/GamesPage
+[33mf74f61c[m Merge branch 'main' into GamesPage
+[33mf12c28b[m fix invalid php syntax causing page load failure
+[33m5fd2f13[m Games page Media Section initial
+[33m116e9d6[m set up steps update
+[33mf3d2be8[m Games and games media schema & model relationship
+[33mac1ff49[m resolve project initation conflict
+[33m0226cf6[m Initial commit
+[33m2648e3a[m Initial commit
