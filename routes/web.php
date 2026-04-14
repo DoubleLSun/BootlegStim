@@ -3,9 +3,11 @@
 use App\Http\Controllers\CartPageController;
 use App\Http\Controllers\GamePageController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\StoreController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -23,11 +25,13 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
+// --- main store page  ---//
+Route::get('/', [StoreController::class, 'index'])->name('store.index');
+
 
 // game page route
+
 Route::get('/games/{game}', [GamePageController::class, 'show'])->name('games.show');
 
 // cart page routes (DB-backed via user_carts)
