@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\GamePageController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\StoreController; 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,5 +17,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::get('/', [StoreController::class, 'index'])->name('store.index');
 Route::get('/games/{game}', [GamePageController::class, 'show'])->name('games.show');
