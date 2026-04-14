@@ -8,7 +8,7 @@
 
     <main class="container mx-auto p-6">
         <section class="mb-10">
-            <form action="/" method="GET" class="flex gap-2">
+            <form action="{{ route('store.index') }}" method="GET" class="flex gap-2">
                 <input type="text" name="search" placeholder="Search games..." 
                        class="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white">
                 <button type="submit" class="bg-blue-600 px-6 py-2 rounded">Search</button>
