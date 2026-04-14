@@ -2,13 +2,26 @@
 
 use App\Http\Controllers\CartPageController;
 use App\Http\Controllers\GamePageController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LibraryController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProfileController;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TestDataController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AuthController;
-// use App\Http\Controllers\UserController;
-// use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('welcome');
@@ -41,8 +54,20 @@ Route::prefix('test')->name('test.')->middleware('auth')->group(function () {
 // home page route after login
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-// Game / product page
-Route::get('/games/{game}', [GamePageController::class, 'show'])->name('games.show');
+
+
+//Route::middleware(['auth'])->group(function () {
+ 
+    // ---- Game Library ----
+    Route::get('/library', [LibraryController::class, 'libraryPage'])->name('library.libraryPage');
+    Route::get('/library/{id}', [LibraryController::class, 'show'])->name('library.show');
+ 
+    // ---- Payment / Checkout ----
+    Route::get('/checkout', [PaymentController::class, 'paymentPage'])->name('payment.paymentPage');
+    Route::post('/checkout/process', [PaymentController::class, 'process'])->name('payment.process');
+    Route::post('/checkout/promo', [PaymentController::class, 'applyPromo'])->name('payment.promo');
+    Route::post('/checkout/wallet', [PaymentController::class, 'toggleWallet'])->name('payment.wallet.toggle');
+//});
 
 // Profile pages
 // Profile route needs to check if there is a logged in user before directing to the profile page, 
@@ -62,3 +87,6 @@ Route::post('/login',   [AuthController::class, 'login'])->name('login.post');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register',[AuthController::class, 'register'])->name('register.post');
 Route::post('/logout',  [AuthController::class, 'logout'])->name('logout');
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
