@@ -1,0 +1,525 @@
+:root {
+            --ink: #c7d5e0;
+            --ink-soft: #8f98a0;
+            --line: #3b4b5f;
+            --paper: #1b2838;
+            --brand: #66c0f4;
+            --brand-soft: #2a475e;
+            --card: #16202d;
+            --shadow: 0 16px 28px rgba(0,0,0,0.35);
+        }
+ 
+        * { box-sizing: border-box; }
+ 
+        body {
+            margin: 0;
+            font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 90% 10%, #2a475e 0%, transparent 35%),
+                radial-gradient(circle at 10% 90%, #0f1d2a 0%, transparent 42%),
+                var(--paper);
+            min-height: 100vh;
+            padding: 32px 20px 48px;
+        }
+ 
+        .page-wrap {
+            width: min(960px, 96vw);
+            margin: 0 auto;
+        }
+ 
+        /* ---- PAGE TITLE ---- */
+        .page-title {
+            margin: 0 0 4px;
+            font-size: clamp(1.4rem, 2vw, 2rem);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+ 
+        .page-subtitle {
+            margin: 0 0 24px;
+            color: var(--ink-soft);
+            font-size: 0.88rem;
+        }
+ 
+        /* ---- STEPS ---- */
+        .checkout-steps {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-bottom: 28px;
+            font-size: 11px;
+        }
+ 
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--ink-soft);
+        }
+        .step.active { color: var(--ink); }
+        .step.done   { color: var(--brand); }
+ 
+        .step-num {
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            background: var(--card);
+            border: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+        }
+        .step.active .step-num { background: var(--brand-soft); border-color: var(--brand); color: var(--brand); }
+        .step.done   .step-num { background: var(--brand); border-color: var(--brand); color: #0d1a24; }
+ 
+        .step-divider {
+            flex: 1; max-width: 40px;
+            height: 1px;
+            background: var(--line);
+            margin: 0 8px;
+        }
+ 
+        /* ---- LAYOUT ---- */
+        .payment-layout {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+ 
+        .order-summary { flex: 1; min-width: 0; }
+        .payment-form-col { width: 340px; flex-shrink: 0; }
+ 
+        /* ---- SECTION BOX (matches .pricing-section style) ---- */
+        .section-box {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+ 
+        .section-box-header {
+            background: #111a24;
+            border-bottom: 1px solid var(--line);
+            padding: 10px 16px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+        }
+ 
+        .section-box-body { padding: 16px; }
+ 
+        /* ---- ORDER ITEMS ---- */
+        .order-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .order-item:last-child { border-bottom: none; }
+ 
+        .order-item-img {
+            width: 96px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 10px;
+            background: var(--brand-soft);
+            flex-shrink: 0;
+        }
+ 
+        .order-item-info { flex: 1; min-width: 0; }
+ 
+        .order-item-name {
+            font-size: 14px;
+            color: var(--ink);
+            margin: 0 0 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+ 
+        .order-item-type { font-size: 11px; color: var(--ink-soft); }
+ 
+        .order-item-price {
+            font-size: 14px;
+            color: var(--brand);
+            white-space: nowrap;
+            font-weight: 700;
+        }
+ 
+        .order-item-remove {
+            background: none;
+            border: none;
+            color: var(--ink-soft);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px;
+            line-height: 1;
+            transition: color 0.15s;
+            border-radius: 50%;
+        }
+        .order-item-remove:hover { color: #ff8a8a; background: rgba(255,138,138,0.1); }
+ 
+        /* ---- PRICE BREAKDOWN ---- */
+        .discount-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            font-size: 13px;
+            color: var(--ink-soft);
+        }
+ 
+        .discount-tag {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 0.2rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: #4c6b22;
+            color: #beee11;
+            margin-left: 6px;
+        }
+ 
+        .discount-amount { color: #beee11; }
+ 
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0 4px;
+            border-top: 1px solid var(--line);
+            margin-top: 8px;
+        }
+ 
+        .total-label {
+            font-size: 13px;
+            color: var(--ink-soft);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+ 
+        .total-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+ 
+        /* ---- PROMO ---- */
+        .promo-input-wrap { display: flex; gap: 8px; }
+ 
+        .promo-input {
+            flex: 1;
+            background: #1e3448;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            color: var(--ink);
+            font-size: 13px;
+            padding: 9px 12px;
+            outline: none;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        .promo-input::placeholder { color: var(--ink-soft); }
+        .promo-input:focus { border-color: var(--brand); }
+ 
+        .btn-secondary {
+            background: var(--brand-soft);
+            border: 1px solid var(--line);
+            color: var(--ink);
+            border-radius: 10px;
+            padding: 9px 16px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.15s;
+            white-space: nowrap;
+            font-family: inherit;
+        }
+        .btn-secondary:hover { background: #3d6f8e; }
+ 
+        /* ---- WALLET ---- */
+        .wallet-box {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+ 
+        .wallet-icon {
+            width: 42px; height: 42px;
+            background: var(--brand-soft);
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+ 
+        .wallet-info { flex: 1; }
+ 
+        .wallet-label {
+            font-size: 11px;
+            color: var(--ink-soft);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 3px;
+        }
+ 
+        .wallet-balance {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--brand);
+        }
+ 
+        .wallet-use-btn {
+            background: #4c6b22;
+            color: #beee11;
+            border: none;
+            border-radius: 10px;
+            padding: 7px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s;
+            font-family: inherit;
+        }
+        .wallet-use-btn:hover { background: #5c8226; }
+ 
+        /* ---- PAYMENT TABS ---- */
+        .payment-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 14px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--line);
+        }
+ 
+        .payment-tab {
+            flex: 1;
+            padding: 10px 6px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            background: var(--card);
+            cursor: pointer;
+            border: none;
+            border-right: 1px solid var(--line);
+            transition: all 0.15s;
+            font-family: inherit;
+        }
+        .payment-tab:last-child { border-right: none; }
+        .payment-tab.active { background: var(--brand-soft); color: var(--brand); }
+        .payment-tab:hover:not(.active) { background: #111a24; }
+ 
+        /* ---- TAB PANELS ---- */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+ 
+        /* ---- FORM ---- */
+        .form-group { margin-bottom: 12px; }
+ 
+        .form-label {
+            display: block;
+            font-size: 11px;
+            color: var(--ink-soft);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 5px;
+        }
+ 
+        .form-input {
+            width: 100%;
+            background: #1e3448;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            color: var(--ink);
+            font-size: 13px;
+            padding: 9px 12px;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+        .form-input::placeholder { color: var(--ink-soft); }
+        .form-input:focus { border-color: var(--brand); }
+ 
+        .form-row { display: flex; gap: 10px; }
+        .form-row .form-group { flex: 1; }
+ 
+        .card-icons { display: flex; gap: 6px; margin-bottom: 12px; }
+ 
+        .card-icon {
+            height: 24px;
+            border-radius: 5px;
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+        }
+        .card-icon.visa  { background: #1a1f71; color: #fff; }
+        .card-icon.mc    { background: #eb001b; color: #fff; }
+        .card-icon.amex  { background: #007bc1; color: #fff; }
+ 
+        /* ---- PAYPAL ---- */
+        .paypal-info { text-align: center; padding: 20px 16px; }
+        .paypal-logo { font-size: 28px; font-weight: 900; margin-bottom: 10px; }
+        .paypal-logo span:first-child { color: #003087; }
+        .paypal-logo span:last-child  { color: #009cde; }
+        .paypal-desc { font-size: 12px; color: var(--ink-soft); margin-bottom: 16px; }
+ 
+        /* ---- BILLING AGREE ---- */
+        .billing-agree {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-top: 14px;
+            font-size: 11px;
+            color: var(--ink-soft);
+            line-height: 1.5;
+        }
+        .billing-agree input[type="checkbox"] { margin-top: 2px; accent-color: var(--brand); }
+        .billing-agree a { color: var(--brand); text-decoration: none; }
+        .billing-agree a:hover { text-decoration: underline; }
+ 
+        /* ---- PURCHASE BUTTON ---- */
+        .btn-purchase {
+            display: block;
+            width: 100%;
+            margin-top: 16px;
+            padding: 14px;
+            background: linear-gradient(to bottom, #75b022 5%, #588a1b 95%);
+            border: none;
+            border-radius: 12px;
+            color: #beee11;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: filter 0.15s;
+            text-align: center;
+            font-family: inherit;
+        }
+        .btn-purchase:hover  { filter: brightness(1.1); }
+        .btn-purchase:active { filter: brightness(0.95); }
+ 
+        .purchase-note {
+            font-size: 10px;
+            color: var(--ink-soft);
+            text-align: center;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+ 
+        .security-badges {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin-top: 10px;
+            font-size: 10px;
+            color: var(--ink-soft);
+        }
+ 
+        /* ---- E-WALLET ---- */
+        .ewallet-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            background: #111a24;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: border-color 0.15s;
+        }
+        .ewallet-option.selected { border-color: var(--brand); }
+        .ewallet-option span { font-size: 13px; color: var(--ink); }
+ 
+        .ewallet-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+ 
+        /* ---- CONFIRM MODAL ---- */
+        .confirm-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .confirm-overlay.show { display: flex; }
+ 
+        .confirm-modal {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+ 
+        .confirm-modal h2 { font-size: 18px; margin: 0 0 10px; color: var(--ink); }
+        .confirm-modal p  { font-size: 13px; color: var(--ink-soft); margin: 0 0 22px; }
+ 
+        .confirm-btns { display: flex; gap: 10px; justify-content: center; }
+ 
+        .confirm-btn-yes {
+            background: linear-gradient(to bottom, #75b022 5%, #588a1b 95%);
+            color: #beee11;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 24px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-family: inherit;
+        }
+ 
+        .confirm-btn-no {
+            background: var(--brand-soft);
+            color: var(--ink);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 10px 24px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-family: inherit;
+        }
+ 
+        @keyframes reveal {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+ 
+        @media (max-width: 700px) {
+            .payment-layout { flex-direction: column; }
+            .payment-form-col { width: 100%; }
+        }
