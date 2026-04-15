@@ -285,6 +285,7 @@
     </div>
 </div>
 
+@push('scripts')
 <script>
     // Tab switching
     function switchTab(tab, btn) {
@@ -362,3 +363,4 @@
 </body>
 </html>
 @endsection
+

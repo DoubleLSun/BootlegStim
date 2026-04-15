@@ -10,9 +10,9 @@ class GamePageController extends Controller
 {
     public function show(Request $request, Game $game)
     {
-        // Load the media items for the game, filtering for images and ordering them appropriately
+        // Load the media items and reviews for the game
         $game->load([
-            'getMedia' => function ($query) {
+            'media' => function ($query) {
                 $query->where('type', 'image')
                     ->orderByDesc('is_cover')
                     ->orderBy('sort_order')
@@ -27,7 +27,7 @@ class GamePageController extends Controller
         ]);
 
         // Determine the default image to display
-        $mediaItems = $game->getMedia->values();
+        $mediaItems = $game->media->values();
         // First try to find the cover image, if not found, use the first media item, if still not found, use a placeholder
         $defaultMedia = $mediaItems->firstWhere('is_cover', true) ?? $mediaItems->first();
         // Use the URL of the default media if available, otherwise fall back to the game's cover image or a placeholder

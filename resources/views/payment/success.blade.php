@@ -2,7 +2,7 @@
 
 @section('title', 'Purchase Successful - BootlegStim')
 
-@section('styles')
+@push('styles')
 <style>
     .success-page {
         background: #1b2838;
@@ -169,7 +169,7 @@
         100% { background-position: -200% 0; }
     }
 </style>
-@endsection
+@endpush
 
 @section('content')
 <div class="success-page">
