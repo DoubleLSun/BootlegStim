@@ -5085,7 +5085,7 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
  */
 
 __webpack_require__(/*! ./components/Example */ "./resources/js/components/Example.js");
-__webpack_require__(/*! ./navigation/topNavbar */ "./resources/js/navigation/topNavbar.js");
+__webpack_require__(/*! ./topNavbar */ "./resources/js/topNavbar.js");
 __webpack_require__(/*! ./cartPage */ "./resources/js/cartPage.js");
 
 /***/ },
@@ -5606,10 +5606,10 @@ if (document.getElementById('example')) {
 
 /***/ },
 
-/***/ "./resources/js/navigation/topNavbar.js"
-/*!**********************************************!*\
-  !*** ./resources/js/navigation/topNavbar.js ***!
-  \**********************************************/
+/***/ "./resources/js/topNavbar.js"
+/*!***********************************!*\
+  !*** ./resources/js/topNavbar.js ***!
+  \***********************************/
 () {
 
 (function () {

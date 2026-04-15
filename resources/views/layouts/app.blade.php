@@ -16,15 +16,23 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
-    <!-- Styles now uses the build css asset compilation file css/app.css-->
+    <!-- Styles: Compiled Sass variables/base and navbar -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/navigation/topNavbar.css') }}" rel="stylesheet">
+
+    <!-- Additional fonts for branding -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 
     @stack('styles')
     @yield('head')
 </head>
 <body class="@yield('body-class')">
     <div id="app">
-        @include('topNavbar')
+        @if (!trim($__env->yieldContent('hide_steam_nav')))
+            @include('topNavbar')
+        @endif
         <main class="@yield('main-class', 'py-4')">
             @yield('content')
         </main>

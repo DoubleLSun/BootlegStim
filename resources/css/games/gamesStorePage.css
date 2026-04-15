@@ -162,10 +162,9 @@ body {
 
 .showcase-panel {
     padding: 0.9rem;
-    max-width: 100%;
-    width: auto;
-    flex: 1 1 0;
-    min-width: 0;
+    flex: 1 1 300px;
+    min-width: 280px;
+    max-width: 380px;
 }
 
 .showcase-section {

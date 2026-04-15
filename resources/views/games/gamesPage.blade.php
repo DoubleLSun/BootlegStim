@@ -4,6 +4,7 @@
 @section('main-class', '')
 
 @push('styles')
+    <!-- Page-specific game styles -->
     <link rel="stylesheet" href="{{ asset('css/games/gamesStorePage.css') }}">
 @endpush
 

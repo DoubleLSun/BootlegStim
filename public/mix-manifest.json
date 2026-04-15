@@ -1,4 +1,9 @@
 {
     "/js/app.js": "/js/app.js",
-    "/css/app.css": "/css/app.css"
+    "/css/app.css": "/css/app.css",
+    "/css/navigation/topNavbar.css": "/css/navigation/topNavbar.css",
+    "/css/games/gamesStorePage.css": "/css/games/gamesStorePage.css",
+    "/css/cart/cartPage.css": "/css/cart/cartPage.css",
+    "/css/profile/profilePage.css": "/css/profile/profilePage.css",
+    "/css/store/index.css": "/css/store/index.css"
 }

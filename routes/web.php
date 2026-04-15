@@ -22,7 +22,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TestDataController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController;
+// use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -91,6 +91,7 @@ Route::post('/login',   [AuthController::class, 'login'])->name('login.post');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register',[AuthController::class, 'register'])->name('register.post');
 Route::post('/logout',  [AuthController::class, 'logout'])->name('logout');
-Auth::routes();
+// we are using custom auth routes instead of Laravel's built-in Auth::routes()
+// Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
