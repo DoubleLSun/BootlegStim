@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'wallet_balance',
         'avatar_url',
         'banner_url',
         'bio',
@@ -73,14 +74,26 @@ class User extends Authenticatable
     }
 
     /**
-     * Games owned by the user.
-     * Pivot table: user_games (user_id, game_id, playtime_minutes, last_played_at)
+     * Games owned by the user (library).
+     * Pivot table: user_games
      */
     public function games()
     {
         return $this->belongsToMany(Game::class, 'user_games')
-                    ->withPivot(['playtime_minutes', 'last_played_at'])
+                    ->withPivot(['hours_played', 'is_installed', 'last_played', 'purchased_at'])
                     ->withTimestamps();
+    }
+
+    /** Orders placed by the user. */
+    public function orders()
+    {
+        return $this->hasMany(\App\Models\Order::class);
+    }
+
+    /** Cart items. */
+    public function cartItems()
+    {
+        return $this->hasMany(\App\Models\CartItem::class);
     }
 
     // ── Accessors ────────────────────────────────────────────────────────────
