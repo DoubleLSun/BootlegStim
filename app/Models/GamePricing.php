@@ -38,6 +38,6 @@ class GamePricing extends Model
 
     public function getGame()
     {
-        return $this->belongsTo('App\Models\Game', 'game_id');
+        return $this->belongsTo(Game::class, 'game_id');
     }
 }
