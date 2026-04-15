@@ -2,47 +2,288 @@
 <html>
 <head>
     <title>Game Store | Home</title>
+
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <script src="https://cdn.tailwindcss.com"></script> </head>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* MAIN LAYOUT */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* SEARCH */
+        .search-section {
+            margin-bottom: 40px;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            color: white;
+            outline: none;
+        }
+
+        .search-button {
+            background: #2563eb;
+            padding: 10px 24px;
+            border-radius: 8px;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            background: #1d4ed8;
+        }
+
+        /* SECTION TITLE */
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+
+        .yellow {
+            color: #facc15;
+        }
+
+        /* FEATURED GAMES */
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .featured-card {
+            position: relative;
+            border: 2px solid #facc15;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .featured-card img {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+        }
+
+        .featured-overlay {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+        }
+
+        .featured-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .view-link {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+
+        /* ALL GAMES */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+        }
+
+        .game-card {
+            background: #1f2937;
+            padding: 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            transition: 0.2s;
+        }
+
+        .game-card:hover {
+            background: #374151;
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .game-title {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .game-price {
+            color: #4ade80;
+        }
+
+        /* ADMIN BANNER (unchanged) */
+        .admin-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, #1f2937, #111827);
+            border: 1px solid #c0ae68;
+            padding: 12px 20px;
+            margin: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .admin-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.6; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .admin-text .title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #facc15;
+        }
+
+        .admin-text .subtitle {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .admin-button {
+            background-color: #facc15;
+            color: #111827;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .admin-button:hover {
+            background-color: #eab308;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
 <body class="bg-gray-900 text-white">
 
-    <main class="container mx-auto p-6">
-        <section class="mb-10">
-            <form action="{{ route('store.index') }}" method="GET" class="flex gap-2">
-                <input type="text" name="search" placeholder="Search games..." 
-                       class="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white">
-                <button type="submit" class="bg-blue-600 px-6 py-2 rounded">Search</button>
-            </form>
-        </section>
+@auth
+    @if(auth()->user()->role == 'admin')
+        <div class="admin-banner">
+            <div class="admin-left">
+                <div class="status-dot"></div>
+                <div class="admin-text">
+                    <div class="title">Admin Control Panel</div>
+                    <div class="subtitle">Full system privileges enabled</div>
+                </div>
+            </div>
 
-        <section class="mb-12">
-            <h2 class="text-2xl font-bold mb-4 text-yellow-400">Featured Games</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                @foreach($featuredGames as $game)
-                    <div class="relative rounded-lg overflow-hidden border-2 border-yellow-500">
-                        <img src="{{ $game->cover_image }}" class="w-full h-64 object-cover">
-                        <div class="absolute bottom-0 p-4 bg-gradient-to-t from-black w-full">
-                            <h3 class="text-xl font-bold">{{ $game->title }}</h3>
-                            <a href="{{ route('games.show', $game->id) }}" class="text-blue-400">View Game</a>
-                        </div>
+            <a href="{{ route('admin.manage') }}" class="admin-button">
+                Open Dashboard
+            </a>
+        </div>
+    @endif
+@endauth
+
+<main class="main-container">
+
+    <!-- Search Section -->
+    <section class="search-section">
+        <form action="{{ route('store.index') }}" method="GET" class="search-form">
+            <input
+                type="text"
+                name="search"
+                placeholder="Search games..."
+                class="search-input"
+            >
+            <button type="submit" class="search-button">
+                Search
+            </button>
+        </form>
+    </section>
+
+    <!-- Featured Games -->
+    <section style="margin-bottom: 50px;">
+        <h2 class="section-title yellow">
+            Featured Games
+        </h2>
+
+        <div class="featured-grid">
+            @foreach($featuredGames as $game)
+                <div class="featured-card">
+                    <img src="{{ $game->cover_image }}">
+
+                    <div class="featured-overlay">
+                        <h3 class="featured-title">
+                            {{ $game->title }}
+                        </h3>
+
+                        <a href="{{ route('games.show', $game->id) }}" class="view-link">
+                            View Game
+                        </a>
                     </div>
-                @endforeach
-            </div>
-        </section>
+                </div>
+            @endforeach
+        </div>
+    </section>
 
-        <section>
-            <h2 class="text-2xl font-bold mb-4">All Games</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                @foreach($allGames as $game)
-                    <a href="{{ route('games.show', $game->id) }}" class="bg-gray-800 p-2 rounded hover:bg-gray-700">
-                        <img src="{{ $game->cover_image }}" class="w-full h-40 object-cover rounded mb-2">
-                        <p class="font-semibold truncate">{{ $game->title }}</p>
-                        <p class="text-green-400">${{ $game->price }}</p>
-                    </a>
-                @endforeach
-            </div>
-        </section>
-    </main>
+    <!-- All Games -->
+    <section>
+        <h2 class="section-title">
+            All Games
+        </h2>
+
+        <div class="games-grid">
+            @foreach($allGames as $game)
+                <a href="{{ route('games.show', $game->id) }}" class="game-card">
+
+                    <img src="{{ $game->cover_image }}">
+
+                    <p class="game-title">
+                        {{ $game->title }}
+                    </p>
+
+                    <p class="game-price">
+                        ${{ $game->price }}
+                    </p>
+
+                </a>
+            @endforeach
+        </div>
+    </section>
+
+</main>
 
 </body>
 </html>

@@ -7,6 +7,8 @@ use App\Http\Controllers\StoreController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminController;
+
 
 
 /*
@@ -28,7 +30,10 @@ use Illuminate\Support\Facades\Auth;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
 // --- main store page  ---//
+
 Route::get('/store', [StoreController::class, 'index'])->name('store.index');
 
 
@@ -93,6 +98,15 @@ Route::post('/login',   [AuthController::class, 'login'])->name('login.post');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register',[AuthController::class, 'register'])->name('register.post');
 Route::post('/logout',  [AuthController::class, 'logout'])->name('logout');
-Auth::routes();
+//Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+// Admin-only area
+Route::middleware(['auth'])->group(function () {
+    // Dedicated page to see the list
+    Route::get('/admin/manage-featured', [AdminController::class, 'manageFeatured'])->name('admin.manage');
+    
+    // Action to toggle the status
+    Route::post('/admin/games/{game}/toggle', [AdminController::class, 'toggleFeatured'])->name('admin.toggle');
+});

@@ -26,7 +26,7 @@
         </a>
         <div class="auth-topbar__links">
             <a href="{{ route('register') }}">Create Account</a>
-            <a href="/">Store</a>
+            <a href="{{ route('store.index') }}">Store</a>
         </div>
     </nav>
 
