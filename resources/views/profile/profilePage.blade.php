@@ -1,16 +1,15 @@
+@extends('layouts.app')
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $user->name }} — BootlegStim</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-</head>
-<body class="profile-body">
+@section('title', $user->name . ' | BootlegStim')
+@section('main-class', '')
+@section('body-class', 'profile-body')
+@section('hide_steam_nav', '1')
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/profile/profilePage.css') }}">
+@endpush
+
+@section('content')
 
 {{-- ── NAV ─────────────────────────────────────────────────────── --}}
 <nav class="pnav" aria-label="Site navigation">
@@ -384,5 +383,4 @@
 
 </div>{{-- /profile-grid --}}
 
-</body>
-</html>
+@endsection

@@ -1,9 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment - BootlegStim</title>
+@extends('layouts.app')
+
+@section('title', 'Payment | BootlegStim')
+@section('main-class', '')
+
+@push('styles')
 <style>
     /* ---- PAYMENT PAGE STYLES ---- */
     .payment-page {
@@ -526,6 +526,9 @@
         max-width: 40px;
     }
 </style>
+@endpush
+
+@section('content')
 
 <div class="payment-page">
     <div class="payment-container">
@@ -804,6 +807,7 @@
     </div>
 </div>
 
+@push('scripts')
 <script>
     // Tab switching
     function switchTab(tab, btn) {
@@ -878,5 +882,6 @@
         if (e.target === this) hideConfirm();
     });
 </script>
-</body>
-</html>
+@endpush
+
+@endsection
