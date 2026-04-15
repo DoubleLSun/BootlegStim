@@ -29,7 +29,7 @@ class LibraryController extends Controller
             ->limit(6)
             ->get();
 
-        return view('library.libraryPage', compact('games', 'recentGames'));
+        return view('library.libraryPage', compact('games', 'recentGames', 'user'));
     }
 
     /**
@@ -37,7 +37,7 @@ class LibraryController extends Controller
      */
     public function show($id)
     {
-        $user = Auth::user();
+        $user = Auth::user();;
 
         $selectedGame = $user->games()
             ->withPivot(['hours_played', 'is_installed', 'last_played'])
@@ -55,6 +55,6 @@ class LibraryController extends Controller
             ->limit(6)
             ->get();
 
-        return view('library.index', compact('games', 'recentGames', 'selectedGame'));
+        return view('library.libraryPage', compact('games', 'recentGames', 'selectedGame'));
     }
 }
