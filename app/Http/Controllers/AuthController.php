@@ -13,9 +13,10 @@ class AuthController extends Controller
 
     public function showLogin()
     {
+        // If already authenticated, redirect to profile
         if (Auth::check()) {
             return redirect()->route('profile.show', Auth::user());
-        }
+        } // Otherwise, show login form
         return view('auth.login');
     }
 
