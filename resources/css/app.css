@@ -1,0 +1,26 @@
+
+:root {
+	--app-text: #c7d5e0;
+	--app-bg: #1b2838;
+	--app-panel: #16202d;
+	--app-border: #2a3f5f;
+}
+
+body:not(.auth-body):not(.profile-body) {
+	margin: 0;
+	font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+	color: var(--app-text);
+	background: radial-gradient(circle at 90% 10%, #2a475e 0%, transparent 35%),
+		radial-gradient(circle at 10% 90%, #0f1d2a 0%, transparent 42%),
+		var(--app-bg);
+	min-height: 100vh;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+img {
+	max-width: 100%;
+}

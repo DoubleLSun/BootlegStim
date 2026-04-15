@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CartItems from './Cart/CartItems';
 import CartSummary from './Cart/CartSummary';
-import '../../css/cart/cartPage.css';
 
 export default function CartPage() {
     const [cartItems, setCartItems] = useState([]);
