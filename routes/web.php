@@ -1,7 +1,8 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GamePageController;
-<<<<<<< HEAD
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,18 +16,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-=======
-use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
-
->>>>>>> master
 Route::get('/', function () {
     return view('welcome');
 });
 
-<<<<<<< HEAD
-Route::get('/games/{game}', [GamePageController::class, 'show'])->name('games.show');
-=======
 // Game / product page
 Route::get('/games/{game}', [GamePageController::class, 'show'])->name('games.show');
 
@@ -41,4 +34,3 @@ Route::post('/login',   [AuthController::class, 'login'])->name('login.post');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register',[AuthController::class, 'register'])->name('register.post');
 Route::post('/logout',  [AuthController::class, 'logout'])->name('logout');
->>>>>>> master

@@ -12,27 +12,15 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-<<<<<<< HEAD
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-=======
->>>>>>> master
     protected $fillable = [
         'name',
         'email',
         'password',
-<<<<<<< HEAD
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-=======
         'avatar_url',
         'banner_url',
         'bio',
@@ -43,23 +31,34 @@ class User extends Authenticatable
         'last_online_at',
     ];
 
->>>>>>> master
+    /**
+     * The attributes that should be appended to model arrays.
+     * Only virtual/computed accessors belong here.
+     *
+     * @var array<int, string>
+     */
+    protected $appends = [
+        'avatar',
+        'banner',
+        'last_seen',
+        'status_class',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-<<<<<<< HEAD
     /**
      * The attributes that should be cast.
      *
      * @var array<string, string>
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-}
-=======
     protected $casts = [
         'email_verified_at' => 'datetime',
         'last_online_at'    => 'datetime',
@@ -114,11 +113,10 @@ class User extends Authenticatable
 
     /** CSS modifier class for status dot. */
     public function getStatusClassAttribute(): string
-{
-    if ($this->status === 'online') return 'status--online';
-    if ($this->status === 'away')   return 'status--away';
-    if ($this->status === 'busy')   return 'status--busy';
-    return 'status--offline';
+    {
+        if ($this->status === 'online') return 'status--online';
+        if ($this->status === 'away')   return 'status--away';
+        if ($this->status === 'busy')   return 'status--busy';
+        return 'status--offline';
+    }
 }
-}
->>>>>>> master

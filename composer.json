@@ -52,7 +52,7 @@
         "setup": [
             "copy .env.example .env",
             "php artisan key:generate",
-            "php artisan migrate --seed"
+            "php artisan migrate:fresh --seed"
         ]
     },
     "extra": {
