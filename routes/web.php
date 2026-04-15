@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Auth;
 
 
 // --- main store page  ---//
-Route::get('/', [StoreController::class, 'index'])->name('store.index');
+Route::get('/store', [StoreController::class, 'index'])->name('store.index');
 
 
 // game page route
