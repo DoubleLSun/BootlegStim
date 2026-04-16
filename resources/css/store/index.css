@@ -1,0 +1,139 @@
+.store-page {
+    width: min(1240px, 94vw);
+    margin: 0 auto;
+    padding: 1.5rem 0 2.5rem;
+    color: #c7d5e0;
+    font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+.store-page section {
+    margin-bottom: 2rem;
+}
+
+.store-page form {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.store-page input[type="text"] {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    border-radius: 6px;
+    background: #132233;
+    border: 1px solid #2c4c66;
+    color: #e6f2fb;
+}
+
+.store-page button[type="submit"] {
+    border: 0;
+    border-radius: 6px;
+    padding: 0.7rem 1rem;
+    background: #1f6a9e;
+    color: #eaf6ff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.store-page h2 {
+    margin: 0 0 0.9rem;
+}
+
+.store-page .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.store-page .featured-card {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #3f5e78;
+    background: #111b27;
+}
+
+.store-page .featured-card img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    display: block;
+}
+
+.store-page .featured-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.75rem;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
+}
+
+.store-page .featured-overlay h3 {
+    margin: 0 0 0.35rem;
+    font-size: 1.05rem;
+}
+
+.store-page .featured-overlay a {
+    color: #66c0f4;
+    text-decoration: none;
+}
+
+.store-page .all-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.store-page .all-item {
+    display: block;
+    background: #101b27;
+    border: 1px solid #2e4c64;
+    border-radius: 8px;
+    padding: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+}
+
+.store-page .all-item img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 0.45rem;
+}
+
+.store-page .all-item p {
+    margin: 0;
+}
+
+.store-page .all-item .price {
+    margin-top: 0.25rem;
+    color: #b8ee11;
+    font-weight: 700;
+}
+
+@media (max-width: 1180px) {
+    .store-page .all-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 860px) {
+    .store-page .featured-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .store-page .all-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 560px) {
+    .store-page form {
+        flex-direction: column;
+    }
+
+    .store-page .featured-grid {
+        grid-template-columns: 1fr;
+    }
+}

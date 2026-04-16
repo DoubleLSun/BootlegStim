@@ -9,73 +9,42 @@ class UserGamesSeeder extends Seeder
 {
     public function run()
     {
-        DB::table('user_games')->insert([
-            [
-                'id' => 1,
-                'user_id' => 1,
-                'game_id' => 1,
-                'hours_played' => 42.50,
-                'is_installed' => true,
-                'last_played' => '2026-04-12 12:03:06',
-                'purchased_at' => '2026-04-12 12:03:06',
-                'created_at' => '2026-04-12 12:03:06',
-                'updated_at' => '2026-04-12 12:03:06',
-            ],
-            [
-                'id' => 2,
-                'user_id' => 1,
-                'game_id' => 2,
-                'hours_played' => 18.00,
-                'is_installed' => true,
-                'last_played' => '2026-04-09 12:03:06',
-                'purchased_at' => '2026-04-12 12:03:06',
-                'created_at' => '2026-04-12 12:03:06',
-                'updated_at' => '2026-04-12 12:03:06',
-            ],
-            [
-                'id' => 3,
-                'user_id' => 1,
-                'game_id' => 3,
-                'hours_played' => 7.25,
-                'is_installed' => false,
-                'last_played' => '2026-04-02 12:03:06',
-                'purchased_at' => '2026-04-12 12:03:06',
-                'created_at' => '2026-04-12 12:03:06',
-                'updated_at' => '2026-04-12 12:03:06',
-            ],
-            [
-                'id' => 4,
-                'user_id' => 1,
-                'game_id' => 4,
-                'hours_played' => 103.00,
-                'is_installed' => true,
-                'last_played' => '2026-04-11 12:03:06',
-                'purchased_at' => '2026-04-12 12:03:06',
-                'created_at' => '2026-04-12 12:03:06',
-                'updated_at' => '2026-04-12 12:03:06',
-            ],
-            [
-                'id' => 5,
-                'user_id' => 1,
-                'game_id' => 5,
-                'hours_played' => 0.00,
-                'is_installed' => false,
-                'last_played' => null,
-                'purchased_at' => '2026-04-12 12:03:06',
-                'created_at' => '2026-04-12 12:03:06',
-                'updated_at' => '2026-04-12 12:03:06',
-            ],
-            [
-                'id' => 6,
-                'user_id' => 1,
-                'game_id' => 6,
-                'hours_played' => 55.75,
-                'is_installed' => true,
-                'last_played' => '2026-04-07 12:03:06',
-                'purchased_at' => '2026-04-12 12:03:06',
-                'created_at' => '2026-04-12 12:03:06',
-                'updated_at' => '2026-04-12 12:03:06',
-            ],
-        ]);
+        $now = now();
+
+        // Look up actual game IDs by title to avoid hard-coded IDs that may not exist
+        $gamesByTitle = DB::table('games')->pluck('id', 'title');
+        $usersByEmail = DB::table('users')->pluck('id', 'email');
+
+        if ($gamesByTitle->isEmpty() || $usersByEmail->isEmpty()) {
+            return;
+        }
+
+        // Use the first seeded user (FragMaster99)
+        $userId = $usersByEmail->get('frag@example.com') ?? $usersByEmail->first();
+
+        $libraryEntries = [
+            ['title' => 'The Witcher 3: Wild Hunt', 'hours' => 42.50, 'installed' => true,  'last_played' => '2026-04-12 12:03:06'],
+            ['title' => 'Cyberpunk 2077',            'hours' => 18.00, 'installed' => true,  'last_played' => '2026-04-09 12:03:06'],
+            ['title' => 'Hades',                     'hours' => 7.25,  'installed' => false, 'last_played' => '2026-04-02 12:03:06'],
+        ];
+
+        foreach ($libraryEntries as $entry) {
+            $gameId = $gamesByTitle->get($entry['title']);
+            if (!$gameId) {
+                continue;
+            }
+
+            DB::table('user_games')->updateOrInsert(
+                ['user_id' => $userId, 'game_id' => $gameId],
+                [
+                    'hours_played'  => $entry['hours'],
+                    'is_installed'  => $entry['installed'],
+                    'last_played'   => $entry['last_played'],
+                    'purchased_at'  => $now,
+                    'created_at'    => $now,
+                    'updated_at'    => $now,
+                ]
+            );
+        }
     }
 }

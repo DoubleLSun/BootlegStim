@@ -22,7 +22,7 @@ class ProfileController extends Controller
         $recentGames = collect();
         try {
             $recentGames = $user->games()
-                ->orderByPivot('last_played_at', 'desc')
+                ->orderByPivot('last_played', 'desc')
                 ->limit(5)
                 ->get();
         } catch (\Exception $e) {

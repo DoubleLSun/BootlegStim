@@ -53,7 +53,7 @@
         "setup": [
             "copy .env.example .env",
             "php artisan key:generate",
-            "php artisan migrate --seed",
+            "php artisan migrate:fresh --seed",
             "@php -r \"$cmd = version_compare(PHP_VERSION, '8.0.0', '>=') ? 'composer require laravel/ui:^4.0 --dev' : 'composer require laravel/ui:^3.4 --dev'; passthru($cmd, $code); exit($code);\"",
             "@php artisan ui react --auth",
             "npm install reactstrap react react-dom",

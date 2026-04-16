@@ -1,41 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $user->name }} — BootlegStim</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-</head>
-<body class="profile-body">
+@extends('layouts.app')
 
-{{-- ── NAV ─────────────────────────────────────────────────────── --}}
-<nav class="pnav" aria-label="Site navigation">
-    <a href="/" class="pnav__brand">
-        <span class="pnav__brand-icon">⚡</span>BootlegStim
-    </a>
-    <ul class="pnav__links">
-        <li><a href="/">Store</a></li>
-        <li><a href="#">Library</a></li>
-        <li><a href="#">Community</a></li>
-    </ul>
-    <div class="pnav__actions">
-        @auth
-            <a href="{{ route('profile.show', Auth::user()) }}" class="pnav__user">
-                <img src="{{ Auth::user()->avatar }}" alt="{{ Auth::user()->name }}" class="pnav__user-avatar">
-                <span class="pnav__user-name">{{ Auth::user()->name }}</span>
-            </a>
-            <form action="{{ route('logout') }}" method="POST" style="display:inline">
-                @csrf
-                <button type="submit" class="pnav__btn">Sign Out</button>
-            </form>
-        @else
-            <a href="{{ route('login') }}" class="pnav__btn">Sign In</a>
-        @endauth
-    </div>
-</nav>
+@section('title', $user->name . ' | BootlegStim')
+@section('main-class', '')
+@section('body-class', 'profile-body')
+
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/profile/profilePage.css') }}">
+@endpush
+
+@section('content')
 
 {{-- Flash message --}}
 @if(session('success'))
@@ -383,5 +357,4 @@
 
 </div>{{-- /profile-grid --}}
 
-</body>
-</html>
+@endsection

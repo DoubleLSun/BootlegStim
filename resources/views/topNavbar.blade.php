@@ -11,8 +11,8 @@
 <nav class="steam-nav" id="steamNav" aria-label="Main navigation">
 	<div class="steam-nav-inner">
 		<div class="steam-nav-upper">
-			<a class="steam-nav-link" href="#">Store</a>
-			<a class="steam-nav-link" href="#">Library</a>
+			<a class="steam-nav-link" href="{{ route('store.index') }}">Store</a>
+			<a class="steam-nav-link" href="{{ route('library.libraryPage') }}">Library</a>
 			<a class="steam-nav-user" href="{{ route('profile') }}">{{ $displayUserName }}</a>
 		</div>
 
@@ -21,13 +21,13 @@
 				<button type="button" class="steam-nav-btn" id="recommendationsBtn" aria-expanded="false" aria-controls="recommendationsDropdown">
 					Recommendations
 				</button>
-				<a class="steam-nav-link" href="#">Categories</a>
+				<a class="steam-nav-link" href=#>Categories</a>
 
 				<form class="steam-nav-search" role="search" action="#" method="get">
 					<input type="search" name="q" placeholder="search" aria-label="Search games">
 				</form>
 
-				<a class="steam-nav-link" href="#">Wishlist</a>
+				<a class="steam-nav-link" href=#>Wishlist</a>
 				<a class="steam-nav-link" href="{{ route('cart.show') }}">Cart</a>
 			</div>
 
