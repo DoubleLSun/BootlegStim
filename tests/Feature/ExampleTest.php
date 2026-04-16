@@ -15,7 +15,9 @@ class ExampleTest extends TestCase
     public function test_example()
     {
         // '/' route redirects to store.index
-        $response = $this->get('/')->followRedirects('store.index');
+        // follo
+        // $response = $this->get('/')->followRedirects()
+        $response = $this->followingRedirects()->get('/');
 
         $response->assertStatus(200);
     }
