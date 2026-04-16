@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/profile/profilePage.css') }}">
 </head>
 <body class="auth-body">
 
@@ -26,7 +26,7 @@
         </a>
         <div class="auth-topbar__links">
             <a href="{{ route('register') }}">Create Account</a>
-            <a href="/">Store</a>
+            <a href="{{ route('store.index') }}">Store</a>
         </div>
     </nav>
 
