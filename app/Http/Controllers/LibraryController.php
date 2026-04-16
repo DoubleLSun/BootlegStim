@@ -12,8 +12,7 @@ class LibraryController extends Controller
      */
     public function libraryPage(Request $request)
     {
-        //$user = Auth::user();
-        $user = \App\Models\User::first();
+        $user = Auth::user();
 
         // Eager-load games with pivot data (hours_played, is_installed, last_played)
         $games = $user->games()

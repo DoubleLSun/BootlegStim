@@ -54,6 +54,7 @@ Route::prefix('test')->name('test.')->middleware('auth')->group(function () {
 // Home page route after login
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
+Route::middleware(['auth'])->group(function () {
 // Game Library
 Route::get('/library', [LibraryController::class, 'libraryPage'])->name('library.libraryPage');
 Route::get('/library/{id}', [LibraryController::class, 'show'])->name('library.show');
@@ -63,6 +64,7 @@ Route::get('/checkout', [PaymentController::class, 'paymentPage'])->name('paymen
 Route::post('/checkout/process', [PaymentController::class, 'process'])->name('payment.process');
 Route::post('/checkout/promo', [PaymentController::class, 'applyPromo'])->name('payment.promo');
 Route::post('/checkout/wallet', [PaymentController::class, 'toggleWallet'])->name('payment.wallet.toggle');
+});
 
 // Profile pages (auth required)
 Route::middleware('auth')->group(function () {
