@@ -13,5 +13,6 @@ require('./bootstrap');
  */
 
 require('./components/Example');
+// Import the CartPage component and render it if the cart-page-root element exists
 require('./cartPage');
 require('./topNavbar');

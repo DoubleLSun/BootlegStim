@@ -5085,6 +5085,7 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
  */
 
 __webpack_require__(/*! ./components/Example */ "./resources/js/components/Example.js");
+// Import the CartPage component and render it if the cart-page-root element exists
 __webpack_require__(/*! ./cartPage */ "./resources/js/cartPage.js");
 __webpack_require__(/*! ./topNavbar */ "./resources/js/topNavbar.js");
 
@@ -5147,6 +5148,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var cartRoot = document.getElementById('cart-page-root');
 if (cartRoot) {
+  // Render the CartPage component into the cartRoot element
   react_dom__WEBPACK_IMPORTED_MODULE_1__.render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_components_CartPage__WEBPACK_IMPORTED_MODULE_2__["default"], {}), cartRoot);
 }
 
