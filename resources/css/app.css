@@ -1,3 +1,6 @@
+@import 'navigation/topNavbar.css';
+@import 'games/gamesStorePage.css';
+@import 'profile/profilePage.css';
 
 :root {
 	--app-text: #c7d5e0;
@@ -24,3 +27,4 @@ a {
 img {
 	max-width: 100%;
 }
+

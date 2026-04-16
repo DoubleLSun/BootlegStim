@@ -7,6 +7,9 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminController;
+
+
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\TestDataController;
 use App\Http\Controllers\UserController;
@@ -25,8 +28,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('store.index');
 });
+
+
+
+// --- main store page  ---//
+
+Route::get('/store', [StoreController::class, 'index'])->name('store.index');
+
 
 // --- Main store page ---
 Route::get('/store', [StoreController::class, 'index'])->name('store.index');
@@ -54,6 +64,7 @@ Route::prefix('test')->name('test.')->middleware('auth')->group(function () {
 // Home page route after login
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
+Route::middleware(['auth'])->group(function () {
 // Game Library
 Route::get('/library', [LibraryController::class, 'libraryPage'])->name('library.libraryPage');
 Route::get('/library/{id}', [LibraryController::class, 'show'])->name('library.show');
@@ -63,6 +74,7 @@ Route::get('/checkout', [PaymentController::class, 'paymentPage'])->name('paymen
 Route::post('/checkout/process', [PaymentController::class, 'process'])->name('payment.process');
 Route::post('/checkout/promo', [PaymentController::class, 'applyPromo'])->name('payment.promo');
 Route::post('/checkout/wallet', [PaymentController::class, 'toggleWallet'])->name('payment.wallet.toggle');
+});
 
 // Profile pages (auth required)
 Route::middleware('auth')->group(function () {
@@ -81,3 +93,13 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register',[AuthController::class, 'register'])->name('register.post');
 Route::post('/logout',  [AuthController::class, 'logout'])->name('logout');
 
+Auth::routes();
+
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/manage-featured', [AdminController::class, 'manageFeatured'])->name('admin.manage');
+    Route::post('/admin/games/{game}/toggle', [AdminController::class, 'toggleFeatured'])->name('admin.toggle');
+});
