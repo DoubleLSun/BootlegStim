@@ -1,243 +1,226 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Game Store | Home</title>
+@extends('layouts.app')
 
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <script src="https://cdn.tailwindcss.com"></script>
+@section('title', 'Game Store | Home')
 
-    <style>
-        /* MAIN LAYOUT */
-        .main-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 24px;
-        }
+@push('styles')
+<style>
+/* GLOBAL STEAM STYLE */
+body {
+    background:
+        radial-gradient(circle at top left, #1b2838 0%, transparent 50%),
+        radial-gradient(circle at top right, #13202e 0%, transparent 55%),
+        linear-gradient(180deg, #0e141b 0%, #0b1016 100%);
+    color: #c6d4df;
+    font-family: Arial, Helvetica, sans-serif;
+}
 
-        /* SEARCH */
-        .search-section {
-            margin-bottom: 40px;
-        }
+/* MAIN CONTAINER */
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 28px;
+}
 
-        .search-form {
-            display: flex;
-            gap: 10px;
-        }
+/* SEARCH */
+.search-form {
+    display: flex;
+    gap: 10px;
+}
 
-        .search-input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            background: #1f2937;
-            border: 1px solid #374151;
-            color: white;
-            outline: none;
-        }
+.search-input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 4px;
+    background: #2a475e;
+    border: 1px solid #1b2838;
+    color: #c6d4df;
+    outline: none;
+}
 
-        .search-button {
-            background: #2563eb;
-            padding: 10px 24px;
-            border-radius: 8px;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
+.search-input:focus {
+    border-color: #66c0f4;
+    box-shadow: 0 0 6px rgba(102,192,244,0.3);
+}
 
-        .search-button:hover {
-            background: #1d4ed8;
-        }
+.search-button {
+    background: linear-gradient(#66c0f4, #1b6aa5);
+    color: #0e141b;
+    padding: 12px 18px;
+    border-radius: 4px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
 
-        /* SECTION TITLE */
-        .section-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 16px;
-        }
+.search-button:hover {
+    filter: brightness(1.1);
+}
 
-        .yellow {
-            color: #facc15;
-        }
+/* SECTION TITLE */
+.section-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 18px 0;
+    color: #66c0f4;
+    letter-spacing: 0.5px;
+}
 
-        /* FEATURED GAMES */
-        .featured-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-        }
+/* FEATURED GRID */
+.featured-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
 
-        .featured-card {
-            position: relative;
-            border: 2px solid #facc15;
-            border-radius: 10px;
-            overflow: hidden;
-        }
+/* FEATURED CARD */
+.featured-card {
+    background: #1b2838;
+    border: 1px solid #2a475e;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: 0.2s;
+}
 
-        .featured-card img {
-            width: 100%;
-            height: 260px;
-            object-fit: cover;
-        }
+.featured-card:hover {
+    transform: translateY(-4px);
+    border-color: #66c0f4;
+}
 
-        .featured-overlay {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-        }
+.featured-card img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+}
 
-        .featured-title {
-            font-size: 18px;
-            font-weight: bold;
-        }
+.featured-overlay {
+    padding: 10px;
+    background: #1b2838;
+}
 
-        .view-link {
-            color: #60a5fa;
-            text-decoration: none;
-        }
+.featured-title {
+    font-size: 16px;
+    font-weight: bold;
+}
 
-        /* ALL GAMES */
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 16px;
-        }
+.view-link {
+    color: #66c0f4;
+    font-size: 13px;
+    text-decoration: none;
+}
 
-        .game-card {
-            background: #1f2937;
-            padding: 10px;
-            border-radius: 8px;
-            text-decoration: none;
-            color: white;
-            transition: 0.2s;
-        }
+.view-link:hover {
+    text-decoration: underline;
+}
 
-        .game-card:hover {
-            background: #374151;
-        }
+/* ALL GAMES GRID */
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+}
 
-        .game-card img {
-            width: 100%;
-            height: 140px;
-            object-fit: cover;
-            border-radius: 6px;
-            margin-bottom: 8px;
-        }
+/* GAME CARD */
+.game-card {
+    background: #1b2838;
+    border: 1px solid #2a475e;
+    border-radius: 4px;
+    padding: 8px;
+    text-decoration: none;
+    color: #c6d4df;
+    transition: 0.2s;
+}
 
-        .game-title {
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+.game-card:hover {
+    border-color: #66c0f4;
+    transform: translateY(-3px);
+}
 
-        .game-price {
-            color: #4ade80;
-        }
+.game-card img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    margin-bottom: 6px;
+}
 
-        /* ADMIN BANNER (unchanged) */
-        .admin-banner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: linear-gradient(90deg, #1f2937, #111827);
-            border: 1px solid #c0ae68;
-            padding: 12px 20px;
-            margin: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-        }
+.game-title {
+    font-size: 13px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+}
 
-        .admin-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+.game-price {
+    color: #66c0f4;
+    font-size: 13px;
+}
 
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            background-color: #22c55e;
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
-        }
+/* ADMIN BAR */
+.admin-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1b2838;
+    border: 1px solid #2a475e;
+    padding: 10px 16px;
+    margin: 12px;
+}
 
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.5); opacity: 0.6; }
-            100% { transform: scale(1); opacity: 1; }
-        }
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background: #66c0f4;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
 
-        .admin-text .title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #facc15;
-        }
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.5; }
+    100% { transform: scale(1); opacity: 1; }
+}
 
-        .admin-text .subtitle {
-            font-size: 12px;
-            color: #9ca3af;
-        }
+.admin-text .title {
+    font-size: 13px;
+    font-weight: bold;
+    color: #66c0f4;
+}
 
-        .admin-button {
-            background-color: #facc15;
-            color: #111827;
-            padding: 8px 14px;
-            border-radius: 6px;
-            font-weight: bold;
-            text-decoration: none;
-            transition: 0.3s;
-        }
+.admin-text .subtitle {
+    font-size: 11px;
+    color: #8f98a0;
+}
 
-        .admin-button:hover {
-            background-color: #eab308;
-            transform: scale(1.05);
-        }
-    </style>
-</head>
+.admin-button {
+    background: #66c0f4;
+    color: #0e141b;
+    padding: 6px 10px;
+    border-radius: 3px;
+    font-weight: bold;
+    text-decoration: none;
+}
 
-<body class="bg-gray-900 text-white">
+.admin-button:hover {
+    filter: brightness(1.1);
+}
+</style>
+@endpush
 
-@auth
-    @if(auth()->user()->role == 'admin')
-        <div class="admin-banner">
-            <div class="admin-left">
-                <div class="status-dot"></div>
-                <div class="admin-text">
-                    <div class="title">Admin Control Panel</div>
-                    <div class="subtitle">Full system privileges enabled</div>
-                </div>
-            </div>
-
-            <a href="{{ route('admin.manage') }}" class="admin-button">
-                Open Dashboard
-            </a>
-        </div>
-    @endif
-@endauth
+@section('content')
 
 <main class="main-container">
 
-    <!-- Search Section -->
+    <!-- Search -->
     <section class="search-section">
         <form action="{{ route('store.index') }}" method="GET" class="search-form">
-            <input
-                type="text"
-                name="search"
-                placeholder="Search games..."
-                class="search-input"
-            >
-            <button type="submit" class="search-button">
-                Search
-            </button>
+            <input type="text" name="search" placeholder="Search games..." class="search-input">
+            <button type="submit" class="search-button">Search</button>
         </form>
     </section>
 
-    <!-- Featured Games -->
+    <!-- Featured -->
     <section style="margin-bottom: 50px;">
-        <h2 class="section-title yellow">
-            Featured Games
-        </h2>
+        <h2 class="section-title">Featured Games</h2>
 
         <div class="featured-grid">
             @foreach($featuredGames as $game)
@@ -245,9 +228,7 @@
                     <img src="{{ $game->cover_image }}">
 
                     <div class="featured-overlay">
-                        <h3 class="featured-title">
-                            {{ $game->title }}
-                        </h3>
+                        <h3 class="featured-title">{{ $game->title }}</h3>
 
                         <a href="{{ route('games.show', $game->id) }}" class="view-link">
                             View Game
@@ -260,9 +241,7 @@
 
     <!-- All Games -->
     <section>
-        <h2 class="section-title">
-            All Games
-        </h2>
+        <h2 class="section-title">All Games</h2>
 
         <div class="games-grid">
             @foreach($allGames as $game)
@@ -270,13 +249,9 @@
 
                     <img src="{{ $game->cover_image }}">
 
-                    <p class="game-title">
-                        {{ $game->title }}
-                    </p>
+                    <p class="game-title">{{ $game->title }}</p>
 
-                    <p class="game-price">
-                        ${{ $game->price }}
-                    </p>
+                    <p class="game-price">${{ $game->price }}</p>
 
                 </a>
             @endforeach
@@ -285,5 +260,4 @@
 
 </main>
 
-</body>
-</html>
+@endsection

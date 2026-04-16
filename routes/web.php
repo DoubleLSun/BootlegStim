@@ -28,7 +28,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('store.index');
 });
 
 
@@ -102,11 +102,8 @@ Route::post('/logout',  [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-// Admin-only area
-Route::middleware(['auth'])->group(function () {
-    // Dedicated page to see the list
+
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/manage-featured', [AdminController::class, 'manageFeatured'])->name('admin.manage');
-    
-    // Action to toggle the status
     Route::post('/admin/games/{game}/toggle', [AdminController::class, 'toggleFeatured'])->name('admin.toggle');
 });
