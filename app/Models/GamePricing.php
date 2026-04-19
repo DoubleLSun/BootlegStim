@@ -9,6 +9,7 @@ class GamePricing extends Model
 {
     use HasFactory;
     protected $table = 'game_pricings';
+    public $timestamps = false;
     /**
      * Attributes:
      * - id: The unique identifier for the game pricing

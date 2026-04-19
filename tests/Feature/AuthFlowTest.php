@@ -39,6 +39,7 @@ class AuthFlowTest extends TestCase
 
     public function test_user_can_login_with_valid_credentials(): void
     {
+        // create a user with 
         $user = User::factory()->create([
             'password' => Hash::make('password123'),
         ]);
@@ -50,6 +51,82 @@ class AuthFlowTest extends TestCase
 
         $this->assertAuthenticatedAs($user);
         $response->assertRedirect(route('profile.show', $user));
+    }
+
+    public function test_authenticated_user_can_open_edit_profile_from_profile_page_link(): void
+    {
+        $user = User::factory()->create();
+
+        $profileResponse = $this->actingAs($user)->get(route('profile.show', $user));
+        $profileResponse->assertOk();
+        $profileResponse->assertSee(route('profile.edit', $user), false);
+
+        $editResponse = $this->get(route('profile.edit', $user));
+        $editResponse->assertOk();
+        $editResponse->assertSee('Editing Profile');
+    }
+
+    public function test_user_can_access_edit_profile_page_using_logged_in_session_id(): void
+    {
+        $user = User::factory()->create([
+            'password' => Hash::make('password123'),
+        ]);
+
+        $loginResponse = $this->post(route('login.post'), [
+            'email' => $user->email,
+            'password' => 'password123',
+        ]);
+
+        $this->assertAuthenticatedAs($user);
+        $loginResponse->assertRedirect(route('profile.show', $user));
+
+        $sessionId = session()->getId();
+        $sessionData = session()->all();
+
+        $this->assertNotEmpty($sessionId);
+
+        $response = $this
+            ->withCookie(config('session.cookie'), $sessionId)
+            ->withSession($sessionData)
+            ->get(route('profile.edit', $user));
+
+        $response->assertOk();
+        $response->assertSee('Editing Profile');
+    }
+
+    public function test_authenticated_user_can_update_profile_from_edit_route(): void
+    {
+        $user = User::factory()->create([
+            'name' => 'Original Name',
+            'bio' => 'Old bio',
+            'location' => 'Old Location',
+            'status' => 'offline',
+        ]);
+
+        $payload = [
+            'name' => 'Updated Name',
+            'bio' => 'Updated bio content',
+            'location' => 'Updated Location',
+            'avatar_url' => 'https://example.com/avatar.jpg',
+            'banner_url' => 'https://example.com/banner.jpg',
+            'status' => 'online',
+            'status_game_id' => null,
+        ];
+
+        $response = $this->actingAs($user)->post(route('profile.update', $user), $payload);
+
+        $response->assertRedirect(route('profile.show', $user));
+        $response->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'name' => 'Updated Name',
+            'bio' => 'Updated bio content',
+            'location' => 'Updated Location',
+            'avatar_url' => 'https://example.com/avatar.jpg',
+            'banner_url' => 'https://example.com/banner.jpg',
+            'status' => 'online',
+        ]);
     }
 
     public function test_user_cannot_login_with_invalid_password(): void
@@ -84,9 +161,5 @@ class AuthFlowTest extends TestCase
 
         $response->assertRedirect(route('login'));
     }
-
-    public function test_profile_edit_placeholder_until_feature_is_finalized(): void
-    {
-        $this->markTestSkipped('Placeholder: add profile edit authorization + validation tests when edit/update behavior is finalized.');
-    }
+    
 }
