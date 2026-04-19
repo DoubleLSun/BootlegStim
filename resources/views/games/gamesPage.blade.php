@@ -26,6 +26,23 @@
 @endphp
 
 <main class="page-wrap">
+    @if(session('success'))
+        <div class="alert alert--success" role="alert">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="alert alert--error" role="alert">
+            <strong>Please fix the following errors:</strong>
+            <ul>
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <h1 class="page-title">{{ $game->title }}</h1>
     <p class="page-subtitle">{{ $game->description }}</p>
 
@@ -121,8 +138,17 @@
             </div>
 
             <div class="pricing-actions" aria-label="Shopping actions placeholder">
-                <button type="button" class="btn-cart" data-game-id="{{ $game->id }}" data-pricing-id="{{ $pricing['pricing_id'] ?? '' }}">Add To Cart</button>
-                <p class="hint-text">Planned: button will post the selected pricing row to the cart flow.</p>
+                @auth
+                    <form action="{{ route('games.cart.add', $game) }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="pricing_id" value="{{ $pricing['pricing_id'] ?? '' }}">
+                        <button type="submit" class="btn-cart">Add To Cart</button>
+                    </form>
+                    <p class="hint-text">This adds the selected pricing row to your cart.</p>
+                @else
+                    <a href="{{ route('login') }}" class="btn-cart" style="display:inline-block;text-decoration:none;">Sign in to add to cart</a>
+                    <p class="hint-text">You need an account to use cart features.</p>
+                @endauth
             </div>
         </div>
     </section>
@@ -170,6 +196,28 @@
             @else
                 <p class="empty-note">No review rows found yet. Seed using: php artisan db:seed --class=GameReviewSeeder</p>
             @endif
+        </div>
+
+        <div class="review-composer" style="margin-top:1.5rem;">
+            <h3>Leave a Comment</h3>
+            @auth
+                <form action="{{ route('games.comments.store', $game) }}" method="POST" class="review-form">
+                    @csrf
+                    <label for="review_content" class="form-label">Your comment</label>
+                    <textarea
+                        id="review_content"
+                        name="review_content"
+                        rows="4"
+                        maxlength="1000"
+                        class="form-textarea"
+                        placeholder="Share what you think about this game..."
+                        required
+                    >{{ old('review_content') }}</textarea>
+                    <button type="submit" class="btn-cart" style="margin-top:0.75rem;">Post Comment</button>
+                </form>
+            @else
+                <p class="empty-note">Sign in to leave a comment on this game.</p>
+            @endauth
         </div>
     </section>
 </main>

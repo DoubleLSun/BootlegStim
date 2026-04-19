@@ -78,7 +78,11 @@ Route::post('/checkout/wallet', [PaymentController::class, 'toggleWallet'])->nam
 
 // Profile pages (auth required)
 Route::middleware('auth')->group(function () {
+    Route::post('/games/{game}/cart', [GamePageController::class, 'addToCart'])->name('games.cart.add');
+    Route::post('/games/{game}/comments', [GamePageController::class, 'storeComment'])->name('games.comments.store');
+
     Route::get('/profile', function () {
+        // auth()->user() does store the user, and connects to the database
         return redirect()->route('profile.show', auth()->user());
     })->name('profile');
     Route::get('/profile/{user}',         [ProfileController::class, 'show'])->name('profile.show');

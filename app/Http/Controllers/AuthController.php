@@ -51,6 +51,7 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+        // validate check if variable matches with User $fillabl
         $validated = $request->validate([
             'name'                  => 'required|string|max:255',
             'email'                 => 'required|email|unique:users,email',
@@ -58,6 +59,8 @@ class AuthController extends Controller
             'password_confirmation' => 'required',
         ]);
 
+        // once validated, create the user with default values for steam_level, status, and last_online_at
+        // done with mass assignment, protected by the $fillable property in the User model
         $user = User::create([
             'name'        => $validated['name'],
             'email'       => $validated['email'],
@@ -67,6 +70,7 @@ class AuthController extends Controller
             'last_online_at' => now(),
         ]);
 
+        // Log the user in immediately after registration
         Auth::login($user);
         $request->session()->regenerate();
 

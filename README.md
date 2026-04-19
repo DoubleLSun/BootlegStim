@@ -73,3 +73,6 @@ University student's project, this project uses Laravel as the main development 
 # Docker Deployment
 1. Deploy and build docker image first 
 <code>docker compose -f docker-compose.prod.yml up --build -d</code>
+
+# Test Suite
+<code>php artisan test</code>

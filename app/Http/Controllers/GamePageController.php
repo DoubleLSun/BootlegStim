@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
+use App\Models\GamePricing;
+use App\Models\GameReview;
+use App\Models\UserCart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -104,5 +107,65 @@ class GamePageController extends Controller
             'recommendedPercent' => $recommendedPercent,
             'reviewSummary' => $reviewSummary,
         ]);
+    }
+
+    public function addToCart(Request $request, Game $game)
+    {
+        $validated = $request->validate([
+            'pricing_id' => 'nullable|integer|exists:game_pricings,id',
+        ]);
+
+        $pricing = null;
+
+        if (!empty($validated['pricing_id'])) {
+            $pricing = GamePricing::query()
+                ->where('id', $validated['pricing_id'])
+                ->where('game_id', $game->id)
+                ->first();
+        }
+
+        if (!$pricing) {
+            $pricing = $game->getGamePricing()->orderBy('id')->first();
+        }
+
+        if (!$pricing) {
+            return back()->withErrors([
+                'pricing_id' => 'No pricing is available for this game yet.',
+            ]);
+        }
+
+        UserCart::create([
+            'user_id' => $request->user()->id,
+            'game_id' => $game->id,
+            'game_pricing_id' => $pricing->id,
+            'price' => $pricing->discounted_price ?? $pricing->price ?? $game->price ?? 0,
+        ]);
+
+        return back()->with('success', 'Game added to your cart.');
+    }
+
+    public function storeComment(Request $request, Game $game)
+    {
+        $validated = $request->validate([
+            'review_content' => 'required|string|max:1000',
+        ]);
+
+        $review = GameReview::firstOrNew([
+            'user_id' => $request->user()->id,
+            'game_id' => $game->id,
+        ]);
+
+        if (!$review->exists) {
+            $review->hours_played = 0;
+            $review->helpful_votes = 0;
+            $review->rating = null;
+        }
+
+        $review->review_content = $validated['review_content'];
+        $review->is_recommended = true;
+        $review->review_date = now();
+        $review->save();
+
+        return back()->with('success', 'Your comment was posted.');
     }
 }
