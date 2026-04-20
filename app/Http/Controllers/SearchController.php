@@ -10,13 +10,18 @@ class SearchController extends Controller
 {
     public function index(Request $request)
     {
+        // keyword trimming 
         $queryText = trim((string) $request->query('q', ''));
+        // collect selected genre IDs, map function converts all values to integer, 
+        // filter removes non-positive integers,
+        // unique ensures no duplicates, 
+        // values resets the keys
         $selectedGenreIds = collect($request->query('genres', []))
             ->map(fn($value) => (int) $value)
             ->filter(fn($id) => $id > 0)
             ->unique()
             ->values();
-
+        // get genre with display_flag true
         $visibleGenres = GameGenre::query()
             ->where('display_flag', true)
             ->withCount('games')
@@ -27,7 +32,9 @@ class SearchController extends Controller
         $gamesQuery = Game::query()
             ->where('is_delisted', false)
             ->with(['genres' => function ($q) {
-            $q->where('display_flag', true)->orderBy('name');
+                $q->where('display_flag', true)->orderBy('name');
+            }, 'getGamePricing' => function ($q) {
+                $q->orderBy('id');
             }]);
 
         if ($queryText !== '') {

@@ -15,6 +15,10 @@ class CreateGameGenresTable extends Migration
     {
         Schema::create('game_genres', function (Blueprint $table) {
             $table->id();
+            $table->string('name')->unique();
+            $table->string('slug')->unique();
+            $table->text('description')->nullable();
+            $table->boolean('display_flag')->default(true);
             $table->timestamps();
         });
     }

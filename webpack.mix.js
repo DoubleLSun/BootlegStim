@@ -17,4 +17,5 @@ mix.js('resources/js/app.js', 'public/js')
     .postCss('resources/css/app.css', 'public/css')
     .postCss('resources/css/navigation/topNavbar.css', 'public/css/navigation')
     .postCss('resources/css/cart/cartPage.css', 'public/css/cart')
-    .postCss('resources/css/admin/manageFeatured.css', 'public/css/admin');
+    .postCss('resources/css/admin/manageFeatured.css', 'public/css/admin')
+    .postCss('resources/css/search/searchPage.css', 'public/css/search');

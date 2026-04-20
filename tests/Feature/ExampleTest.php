@@ -17,8 +17,8 @@ class ExampleTest extends TestCase
         // '/' route redirects to store.index
         // follo
         // $response = $this->get('/')->followRedirects()
-        $response = $this->followingRedirects()->get('/');
+        $response = $this->followingRedirects()->get('/sdfsafasd');
 
-        $response->assertStatus(200);
+        $response->assertSee('Featured Games');
     }
 }

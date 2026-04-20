@@ -127,3 +127,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/genres/{genre}/delete', [AdminController::class, 'deleteGenre'])->name('admin.genres.delete');
     Route::post('/admin/genres/{genre}/toggle-display', [AdminController::class, 'toggleGenreDisplay'])->name('admin.genres.toggle-display');
 });
+
+// Redirect invalid routes to home
+Route::fallback(function () {
+    // return response()->view('errors.404', [], 404);
+    // Redirect invalid routes to home
+    return redirect()->route('store.index');
+});

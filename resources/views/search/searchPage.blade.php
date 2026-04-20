@@ -69,20 +69,39 @@
 			</div>
 
 			@if($results->isNotEmpty())
-				<div class="result-grid">
+				<div class="result-list">
 					@foreach($results as $game)
-						<a class="result-card" href="{{ route('games.show', ['game' => $game]) }}">
-							<img src="{{ $game->cover_image ?: 'https://via.placeholder.com/460x215?text=Game+Image' }}" alt="{{ $game->title }} cover">
-							<div class="result-card-body">
+						@php
+							$pricingRows = $game->getGamePricing;
+							$selectedPricing = null;
+							if ($game->use_pricing_tag && !empty($game->selected_pricing_id)) {
+								$selectedPricing = $pricingRows->firstWhere('id', (int) $game->selected_pricing_id);
+							}
+							$pricingRow = $selectedPricing ?: $pricingRows->first();
+							$currency = $pricingRow->currency ?? 'USD';
+							$basePrice = (float) ($pricingRow->price ?? $game->price);
+							$hasDiscount = $pricingRow
+								&& !is_null($pricingRow->discount_percentage)
+								&& !is_null($pricingRow->discounted_price)
+								&& (float) $pricingRow->discounted_price < (float) $pricingRow->price;
+							$discountPct = $hasDiscount ? (float) $pricingRow->discount_percentage : null;
+							$discountedPrice = $hasDiscount ? (float) $pricingRow->discounted_price : null;
+						@endphp
+						<a class="result-row" href="{{ route('games.show', ['game' => $game]) }}">
+							<img src="{{ $game->cover_image ?: 'https://via.placeholder.com/160x90?text=Game' }}" alt="{{ $game->title }} cover">
+							<div class="result-row-main">
 								<h3>{{ $game->title }}</h3>
-								<p>{{ \Illuminate\Support\Str::limit($game->description, 120) }}</p>
-								<div class="genre-row" title="Game genres">
-									@forelse($game->genres as $genre)
-										<span class="genre-pill">{{ $genre->name }}</span>
-									@empty
-										<span class="genre-pill empty">No genres</span>
-									@endforelse
-								</div>
+							</div>
+							<div class="result-row-price">
+								@if($hasDiscount)
+									<span class="discount-badge">-{{ (int) round($discountPct) }}%</span>
+									<div class="price-stack">
+										<span class="price-original">{{ $currency }} {{ number_format($basePrice, 2) }}</span>
+										<span class="price-final">{{ $currency }} {{ number_format($discountedPrice, 2) }}</span>
+									</div>
+								@else
+									<span class="price-final">{{ $currency }} {{ number_format($basePrice, 2) }}</span>
+								@endif
 							</div>
 						</a>
 					@endforeach
