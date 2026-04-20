@@ -211,12 +211,12 @@ body {
 <main class="main-container">
 
     <!-- Search -->
-    <section class="search-section">
+    <!-- <section class="search-section">
         <form action="{{ route('store.index') }}" method="GET" class="search-form">
             <input type="text" name="search" placeholder="Search games..." class="search-input">
             <button type="submit" class="search-button">Search</button>
         </form>
-    </section>
+    </section> -->
 
     <!-- Featured -->
     <section style="margin-bottom: 50px;">

@@ -5,6 +5,14 @@
 		->take(3)
 		->get());
 
+	$popularGenres = \App\Models\GameGenre::query()
+		->where('display_flag', true)
+		->withCount('games')
+		->orderByDesc('games_count')
+		->orderBy('name')
+		->take(5)
+		->get();
+
 	$displayUserName = strtoupper(optional(auth()->user())->name ?? 'USER_NAME');
 @endphp
 
@@ -31,10 +39,14 @@
 				<button type="button" class="steam-nav-btn" id="recommendationsBtn" aria-expanded="false" aria-controls="recommendationsDropdown">
 					Recommendations
 				</button>
-				<a class="steam-nav-link" href=#>Categories</a>
+				<button type="button" class="steam-nav-btn" id="genresBtn" aria-expanded="false" aria-controls="genresDropdown">
+					Genres
+				</button>
 
-				<form class="steam-nav-search" role="search" action="#" method="get">
-					<input type="search" name="q" placeholder="search" aria-label="Search games">
+				<form class="steam-nav-search" id="steamNavSearchForm" role="search" action="{{ route('search.index') }}" method="get" autocomplete="off">
+					<input type="search" id="steamNavSearchInput" name="q" placeholder="Search games" aria-label="Search games">
+					<button type="submit" class="steam-nav-search-btn" aria-label="Submit search">🔍</button>
+					<div class="steam-search-preview" id="steamSearchPreview" role="listbox" aria-label="Search suggestions"></div>
 				</form>
 
 				<a class="steam-nav-link" href=#>Wishlist</a>
@@ -59,6 +71,26 @@
 					</div>
 				@else
 					<p class="steam-featured-empty">No featured games found yet.</p>
+				@endif
+			</div>
+
+			<div class="steam-nav-dropdown" id="genresDropdown" role="region" aria-label="Popular genres">
+				<p class="steam-nav-dropdown-title">Popular genres</p>
+
+				@if ($popularGenres->isNotEmpty())
+					<div class="steam-featured-list">
+						@foreach ($popularGenres as $genre)
+							<a class="steam-featured-row" href="{{ route('search.index', ['genres' => [$genre->id]]) }}">
+								<div class="steam-featured-meta">
+									<strong>{{ $genre->name }}</strong>
+									<span>{{ $genre->description ?: 'Popular genre' }}</span>
+								</div>
+								<span class="steam-featured-price">{{ $genre->games_count }} games</span>
+							</a>
+						@endforeach
+					</div>
+				@else
+					<p class="steam-featured-empty">No genres available yet.</p>
 				@endif
 			</div>
 		</div>

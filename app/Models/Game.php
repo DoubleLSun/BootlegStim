@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Game extends Model
 {
@@ -80,5 +81,13 @@ class Game extends Model
     public function getGamePricing()
     {
         return $this->hasMany(\App\Models\GamePricing::class);
+    }
+
+    /**
+     * Game belongsToMany GameGenre (normalized many-to-many via pivot table).
+     */
+    public function genres(): BelongsToMany
+    {
+        return $this->belongsToMany(GameGenre::class, 'game_genre_game', 'game_id', 'genre_id');
     }
 }

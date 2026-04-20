@@ -5683,7 +5683,12 @@ if (document.getElementById('example')) {
   var lowerWrap = document.getElementById('steamNavLowerWrap');
   var recBtn = document.getElementById('recommendationsBtn');
   var recDropdown = document.getElementById('recommendationsDropdown');
-  if (!nav || !lowerWrap || !recBtn || !recDropdown) {
+  var genresBtn = document.getElementById('genresBtn');
+  var genresDropdown = document.getElementById('genresDropdown');
+  var searchForm = document.getElementById('steamNavSearchForm');
+  var searchInput = document.getElementById('steamNavSearchInput');
+  var searchPreview = document.getElementById('steamSearchPreview');
+  if (!nav || !lowerWrap || !recBtn || !recDropdown || !genresBtn || !genresDropdown || !searchForm || !searchInput || !searchPreview) {
     return;
   }
   var lastY = window.scrollY || 0;
@@ -5694,6 +5699,8 @@ if (document.getElementById('example')) {
       nav.classList.add('is-compact');
       recDropdown.classList.remove('is-open');
       recBtn.setAttribute('aria-expanded', 'false');
+      genresDropdown.classList.remove('is-open');
+      genresBtn.setAttribute('aria-expanded', 'false');
       // retract animation to hide entire lower wrap
       lowerWrap.style.animation = 'retract 0.3s forwards';
       lowerWrap.style.display = 'none';
@@ -5709,11 +5716,71 @@ if (document.getElementById('example')) {
   recBtn.addEventListener('click', function () {
     var isOpen = recDropdown.classList.toggle('is-open');
     recBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    genresDropdown.classList.remove('is-open');
+    genresBtn.setAttribute('aria-expanded', 'false');
+  });
+  genresBtn.addEventListener('click', function () {
+    var isOpen = genresDropdown.classList.toggle('is-open');
+    genresBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    recDropdown.classList.remove('is-open');
+    recBtn.setAttribute('aria-expanded', 'false');
+  });
+  var searchPreviewRequest = null;
+  var closeSearchPreview = function closeSearchPreview() {
+    searchPreview.classList.remove('is-open');
+    searchPreview.innerHTML = '';
+  };
+  var renderSearchPreview = function renderSearchPreview(results) {
+    if (!Array.isArray(results) || results.length === 0) {
+      searchPreview.innerHTML = '<p class="steam-search-preview-empty">No matching titles.</p>';
+      searchPreview.classList.add('is-open');
+      return;
+    }
+    searchPreview.innerHTML = results.map(function (row) {
+      var cover = row.cover_image || 'https://via.placeholder.com/120x45?text=Game';
+      var title = row.title || 'Untitled Game';
+      var url = row.url || '#';
+      return "<a class=\"steam-search-preview-item\" href=\"".concat(url, "\"><img src=\"").concat(cover, "\" alt=\"").concat(title, "\"><span>").concat(title, "</span></a>");
+    }).join('');
+    searchPreview.classList.add('is-open');
+  };
+  searchInput.addEventListener('input', function () {
+    var q = searchInput.value.trim();
+    if (q.length === 0) {
+      closeSearchPreview();
+      return;
+    }
+    if (searchPreviewRequest) {
+      searchPreviewRequest.abort();
+    }
+    searchPreviewRequest = new AbortController();
+    fetch("/search/preview?q=".concat(encodeURIComponent(q)), {
+      signal: searchPreviewRequest.signal
+    }).then(function (res) {
+      return res.ok ? res.json() : Promise.reject(new Error('Preview failed'));
+    }).then(function (payload) {
+      return renderSearchPreview(payload.results || []);
+    })["catch"](function () {
+      // Ignore abort errors and silent failures for preview UX.
+    });
+  });
+  searchInput.addEventListener('focus', function () {
+    if (searchPreview.children.length > 0) {
+      searchPreview.classList.add('is-open');
+    }
+  });
+  searchForm.addEventListener('submit', function () {
+    closeSearchPreview();
   });
   document.addEventListener('click', function (event) {
     if (!lowerWrap.contains(event.target)) {
       recDropdown.classList.remove('is-open');
       recBtn.setAttribute('aria-expanded', 'false');
+      genresDropdown.classList.remove('is-open');
+      genresBtn.setAttribute('aria-expanded', 'false');
+    }
+    if (!searchForm.contains(event.target)) {
+      closeSearchPreview();
     }
   });
 })();

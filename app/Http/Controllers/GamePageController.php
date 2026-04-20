@@ -27,6 +27,9 @@ class GamePageController extends Controller
                     ->orderByDesc('helpful_votes')
                     ->orderByDesc('id');
             },
+            'genres' => function ($query) {
+                $query->where('display_flag', true)->orderBy('name');
+            },
         ]);
 
         // Determine the default image to display
@@ -148,6 +151,8 @@ class GamePageController extends Controller
     {
         $validated = $request->validate([
             'review_content' => 'required|string|max:1000',
+            'is_recommended' => 'required|boolean',
+            'rating' => 'required|integer|min:1|max:5',
         ]);
 
         $review = GameReview::firstOrNew([
@@ -158,14 +163,78 @@ class GamePageController extends Controller
         if (!$review->exists) {
             $review->hours_played = 0;
             $review->helpful_votes = 0;
-            $review->rating = null;
         }
 
         $review->review_content = $validated['review_content'];
-        $review->is_recommended = true;
+        $review->is_recommended = (bool) $validated['is_recommended'];
+        $review->rating = (int) $validated['rating'];
         $review->review_date = now();
         $review->save();
 
         return back()->with('success', 'Your comment was posted.');
+    }
+
+    public function updateComment(Request $request, Game $game, GameReview $review)
+    {
+        if ((int) $review->game_id !== (int) $game->id) {
+            abort(404);
+        }
+
+        if (!$this->canManageReview($request, $review)) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'review_content' => 'required|string|max:1000',
+            'is_recommended' => 'required|boolean',
+            'rating' => 'required|integer|min:1|max:5',
+        ]);
+
+        $review->review_content = $validated['review_content'];
+        $review->is_recommended = (bool) $validated['is_recommended'];
+        $review->rating = (int) $validated['rating'];
+        $review->review_date = now();
+        $review->save();
+
+        return back()->with('success', 'Review updated successfully.');
+    }
+
+    public function deleteComment(Request $request, Game $game, GameReview $review)
+    {
+        if ((int) $review->game_id !== (int) $game->id) {
+            abort(404);
+        }
+
+        if (!$this->canManageReview($request, $review)) {
+            abort(403);
+        }
+
+        $review->delete();
+
+        return back()->with('success', 'Review deleted successfully.');
+    }
+
+    public function markHelpful(Request $request, Game $game, GameReview $review)
+    {
+        if ((int) $review->game_id !== (int) $game->id) {
+            abort(404);
+        }
+
+        $review->increment('helpful_votes');
+
+        return back()->with('success', 'Thanks for your feedback. Helpful vote recorded.');
+    }
+
+    private function canManageReview(Request $request, GameReview $review): bool
+    {
+        $user = $request->user();
+        if (!$user) {
+            return false;
+        }
+
+        $isOwner = (int) $review->user_id === (int) $user->id;
+        $isAdmin = (string) ($user->role ?? '') === 'admin';
+
+        return $isOwner || $isAdmin;
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
+use App\Models\GameGenre;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -14,8 +15,13 @@ class AdminController extends Controller
     {
         // Get all games alphabetically to make management easier
         $allGames = Game::orderBy('title', 'asc')->get();
+        $allGenres = GameGenre::query()
+            ->withCount('games')
+            ->orderByDesc('games_count')
+            ->orderBy('name')
+            ->get();
         
-        return view('admin.manage_featured', compact('allGames'));
+        return view('admin.manage_featured', compact('allGames', 'allGenres'));
     }
 
     /**
@@ -28,5 +34,13 @@ class AdminController extends Controller
         $game->save();
 
         return back()->with('success', 'Featured status updated for ' . $game->title);
+    }
+
+    public function toggleGenreDisplay(GameGenre $genre)
+    {
+        $genre->display_flag = !$genre->display_flag;
+        $genre->save();
+
+        return back()->with('success', 'Genre visibility updated for ' . $genre->name);
     }
 }

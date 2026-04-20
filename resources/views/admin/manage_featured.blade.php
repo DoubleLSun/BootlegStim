@@ -79,6 +79,12 @@
         overflow: hidden;
     }
 
+    .section-title {
+        margin: 34px 0 12px;
+        font-size: 18px;
+        color: #fff;
+    }
+
     table {
         width: 100%;
         border-collapse: separate;
@@ -271,6 +277,59 @@
                     <tr>
                         <td colspan="2" style="padding: 60px; text-align: center; color: var(--text-muted);">
                             No titles found in the database.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    <h2 class="section-title">Genre Visibility</h2>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Genre</th>
+                    <th style="text-align: right; padding-right: 50px;">Display Flag</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($allGenres as $genre)
+                    <tr>
+                        <td>
+                            <div class="game-info" style="gap:12px;">
+                                <span class="game-title" style="font-size:16px;">{{ $genre->name }}</span>
+                                <span style="font-size:12px;color:var(--text-muted);">{{ $genre->games_count }} games</span>
+                            </div>
+                        </td>
+                        <td>
+                            <form action="{{ route('admin.genres.toggle-display', $genre) }}" method="POST" id="toggle-genre-form-{{ $genre->id }}">
+                                @csrf
+                                <div class="toggle-container">
+                                    <span class="badge {{ $genre->display_flag ? '' : 'badge-standard' }}" style="opacity: {{ $genre->display_flag ? '0.15' : '1' }}">
+                                        Hidden
+                                    </span>
+
+                                    <label class="switch">
+                                        <input
+                                            type="checkbox"
+                                            {{ $genre->display_flag ? 'checked' : '' }}
+                                            onchange="document.getElementById('toggle-genre-form-{{ $genre->id }}').submit()"
+                                        >
+                                        <span class="slider"></span>
+                                    </label>
+
+                                    <span class="badge {{ $genre->display_flag ? 'badge-featured' : '' }}" style="opacity: {{ !$genre->display_flag ? '0.15' : '1' }}">
+                                        Visible
+                                    </span>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="2" style="padding: 40px; text-align: center; color: var(--text-muted);">
+                            No genres found.
                         </td>
                     </tr>
                 @endforelse

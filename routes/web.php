@@ -8,6 +8,7 @@ use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SearchController;
 
 
 use App\Http\Controllers\StoreController;
@@ -36,6 +37,10 @@ Route::get('/store', [StoreController::class, 'index'])->name('store.index');
 
 // Game / product page
 Route::get('/games/{game}', [GamePageController::class, 'show'])->name('games.show');
+
+// Search (public)
+Route::get('/search', [SearchController::class, 'index'])->name('search.index');
+Route::get('/search/preview', [SearchController::class, 'preview'])->name('search.preview');
 
 // Cart page routes (DB-backed via user_carts)
 Route::middleware('auth')->group(function () {
@@ -77,6 +82,9 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/games/{game}/cart', [GamePageController::class, 'addToCart'])->name('games.cart.add');
     Route::post('/games/{game}/comments', [GamePageController::class, 'storeComment'])->name('games.comments.store');
+    Route::post('/games/{game}/comments/{review}/update', [GamePageController::class, 'updateComment'])->name('games.comments.update');
+    Route::post('/games/{game}/comments/{review}/delete', [GamePageController::class, 'deleteComment'])->name('games.comments.delete');
+    Route::post('/games/{game}/comments/{review}/helpful', [GamePageController::class, 'markHelpful'])->name('games.comments.helpful');
 
     Route::get('/profile', function () {
         // auth()->user() does store the user, and connects to the database
@@ -103,4 +111,5 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/manage-featured', [AdminController::class, 'manageFeatured'])->name('admin.manage');
     Route::post('/admin/games/{game}/toggle', [AdminController::class, 'toggleFeatured'])->name('admin.toggle');
+    Route::post('/admin/genres/{genre}/toggle-display', [AdminController::class, 'toggleGenreDisplay'])->name('admin.genres.toggle-display');
 });
