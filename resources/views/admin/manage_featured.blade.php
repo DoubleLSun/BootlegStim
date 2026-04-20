@@ -45,153 +45,175 @@
 
         <div class="games-grid">
             @forelse($allGames as $game)
-                <article class="game-card">
-                    <div class="game-top">
-                        <div class="game-info">
-                            @if($game->cover_image)
-                                <img class="game-thumb" src="{{ $game->cover_image }}" alt="{{ $game->title }}">
-                            @else
-                                <div class="game-thumb" style="display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:11px;">No Cover</div>
-                            @endif
-                            <div class="game-meta">
-                                <h3>{{ $game->title }}</h3>
-                                <p>Game ID: {{ $game->id }} | Dev: {{ $game->developer_id }} | Publisher: {{ $game->publisher_id }}</p>
-                                <p>Genres:
-                                    @forelse($game->genres as $genre)
-                                        <span class="pill pill-muted">{{ $genre->name }}</span>
-                                    @empty
-                                        <span class="pill pill-muted">None</span>
-                                    @endforelse
-                                </p>
-                                <div>
-                                    <span class="pill {{ $game->is_featured ? 'pill-ok' : 'pill-muted' }}">{{ $game->is_featured ? 'Featured' : 'Not Featured' }}</span>
-                                    <span class="pill {{ $game->is_delisted ? 'pill-danger' : 'pill-ok' }}">{{ $game->is_delisted ? 'Delisted' : 'Listed' }}</span>
-                                </div>
-                            </div>
-                        </div>
+                <article class="game-card is-collapsed" data-game-card>
+                    <button type="button" class="game-bar" data-game-toggle aria-expanded="false">
+                        <span class="game-bar-title">{{ $game->title }}</span>
+                        <span class="game-bar-toggle" aria-hidden="true">+</span>
+                    </button>
 
-                        <div class="inline-wrap">
-                            <button
-                                type="button"
-                                class="btn"
-                                data-open-modal="gameModal"
-                                data-mode="edit"
-                                data-action="{{ route('admin.games.update', $game) }}"
-                                data-title="{{ $game->title }}"
-                                data-description="{{ $game->description }}"
-                                data-price="{{ $game->price }}"
-                                data-release_date="{{ optional($game->release_date)->format('Y-m-d') }}"
-                                data-developer_id="{{ $game->developer_id }}"
-                                data-publisher_id="{{ $game->publisher_id }}"
-                                data-cover_image="{{ $game->cover_image }}"
-                                data-genre_ids="{{ $game->genres->pluck('id')->implode(',') }}"
-                            >Edit Game</button>
-
-                            <form action="{{ route('admin.toggle', $game) }}" method="POST">
-                                @csrf
-                                <button class="btn" type="submit">Toggle Featured</button>
-                            </form>
-
-                            <form action="{{ route('admin.games.toggle-delist', $game) }}" method="POST">
-                                @csrf
-                                <button class="btn {{ $game->is_delisted ? '' : 'btn-danger' }}" type="submit">
-                                    {{ $game->is_delisted ? 'Relist' : 'Delist' }}
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="group">
-                        <h4>Pricing Tag and Pricing Options</h4>
-                        <form class="inline-wrap" action="{{ route('admin.games.pricing-tag', $game) }}" method="POST">
-                            @csrf
-                            <label style="display:flex;align-items:center;gap:6px;">
-                                <input type="checkbox" name="use_pricing_tag" value="1" {{ $game->use_pricing_tag ? 'checked' : '' }}>
-                                <span>Use Pricing Tag</span>
-                            </label>
-                            <select name="selected_pricing_id">
-                                <option value="">No selected pricing</option>
-                                @foreach($game->getGamePricing as $pricing)
-                                    <option value="{{ $pricing->id }}" {{ (int) $game->selected_pricing_id === (int) $pricing->id ? 'selected' : '' }}>
-                                        #{{ $pricing->id }} {{ $pricing->currency }} {{ number_format((float) $pricing->price, 2) }}
-                                        @if(!is_null($pricing->discount_percentage))
-                                            ({{ (float) $pricing->discount_percentage }}% off)
-                                        @endif
-                                    </option>
-                                @endforeach
-                            </select>
-                            <button type="submit" class="btn">Save Pricing Tag</button>
-                        </form>
-
-                        <div style="margin-top:8px;" class="media-list">
-                            @forelse($game->getGamePricing as $pricing)
-                                <div class="media-row">
-                                    <form class="form-grid" action="{{ route('admin.pricings.update', [$game, $pricing]) }}" method="POST">
-                                        @csrf
-                                        <input type="number" name="price" step="0.01" min="0" value="{{ $pricing->price }}" required>
-                                        <input type="number" name="discount_percentage" step="0.01" min="0" max="100" value="{{ $pricing->discount_percentage }}" placeholder="Discount %">
-                                        <input type="number" name="discounted_price" step="0.01" min="0" value="{{ $pricing->discounted_price }}" placeholder="Discounted Price">
-                                        <div class="inline-wrap">
-                                            <input style="max-width:90px;" type="text" name="currency" value="{{ $pricing->currency }}" maxlength="3" required>
-                                            <button type="submit" class="btn">Update</button>
-                                        </div>
-                                    </form>
-                                    <form action="{{ route('admin.pricings.delete', [$game, $pricing]) }}" method="POST">
-                                        @csrf
-                                        <button class="btn btn-danger" type="submit">Delete</button>
-                                    </form>
-                                </div>
-                            @empty
-                                <div style="color:var(--text-muted);font-size:13px;">No pricing entries yet.</div>
-                            @endforelse
-                        </div>
-
-                        <form class="form-grid" style="margin-top:8px;" action="{{ route('admin.pricings.create', $game) }}" method="POST">
-                            @csrf
-                            <input type="number" name="price" step="0.01" min="0" placeholder="Base Price" required>
-                            <input type="number" name="discount_percentage" step="0.01" min="0" max="100" placeholder="Discount %">
-                            <input type="number" name="discounted_price" step="0.01" min="0" placeholder="Discounted Price">
-                            <div class="inline-wrap">
-                                <input style="max-width:90px;" type="text" name="currency" value="USD" maxlength="3" required>
-                                <button type="submit" class="btn">Add Pricing</button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="group">
-                        <h4>Media Manager</h4>
-                        <form action="{{ route('admin.media.create', $game) }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <div class="form-grid-2">
-                                <textarea name="image_links" placeholder="Image URLs (one per line)"></textarea>
-                                <textarea name="video_links" placeholder="Video URLs (one per line)"></textarea>
-                            </div>
-                            <div class="inline-wrap" style="margin-top:8px;">
-                                <input style="max-width:360px;" type="file" name="image_files[]" multiple accept="image/*" class="media-file-input" data-preview-target="preview-{{ $game->id }}">
-                                <button class="btn" type="submit">Add Media</button>
-                            </div>
-                            <div id="preview-{{ $game->id }}" class="preview-grid"></div>
-                        </form>
-
-                        <div class="media-list" style="margin-top:8px;">
-                            @forelse($game->media as $media)
-                                <div class="media-row">
-                                    <div class="inline-wrap" style="align-items:center;">
-                                        @if($media->type === 'image')
-                                            <img class="media-preview" src="{{ $media->thumbnail_url ?: $media->url }}" alt="media">
-                                        @else
-                                            <span class="pill pill-muted">VIDEO</span>
-                                        @endif
-                                        <span style="font-size:12px;color:var(--text-muted);max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $media->url }}</span>
+                    <div class="game-body" data-game-body hidden>
+                        <div class="game-top">
+                            <div class="game-info">
+                                @if($game->cover_image)
+                                    <img class="game-thumb" src="{{ $game->cover_image }}" alt="{{ $game->title }}">
+                                @else
+                                    <div class="game-thumb" style="display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:11px;">No Cover</div>
+                                @endif
+                                <div class="game-meta">
+                                    <h3>{{ $game->title }}</h3>
+                                    <p>Game ID: {{ $game->id }} | Dev: {{ $game->developer_id }} | Publisher: {{ $game->publisher_id }}</p>
+                                    <p>Genres:
+                                        @forelse($game->genres as $genre)
+                                            <span class="pill pill-muted">{{ $genre->name }}</span>
+                                        @empty
+                                            <span class="pill pill-muted">None</span>
+                                        @endforelse
+                                    </p>
+                                    <div>
+                                        <span class="pill {{ $game->is_featured ? 'pill-ok' : 'pill-muted' }}">{{ $game->is_featured ? 'Featured' : 'Not Featured' }}</span>
+                                        <span class="pill {{ $game->is_delisted ? 'pill-danger' : 'pill-ok' }}">{{ $game->is_delisted ? 'Delisted' : 'Listed' }}</span>
                                     </div>
-                                    <form action="{{ route('admin.media.delete', [$game, $media]) }}" method="POST">
-                                        @csrf
-                                        <button class="btn btn-danger" type="submit">Remove</button>
-                                    </form>
                                 </div>
-                            @empty
-                                <div style="color:var(--text-muted);font-size:13px;">No media entries yet.</div>
-                            @endforelse
+                            </div>
+
+                            <div class="inline-wrap">
+                                <button
+                                    type="button"
+                                    class="btn"
+                                    data-open-modal="gameModal"
+                                    data-mode="edit"
+                                    data-action="{{ route('admin.games.update', $game) }}"
+                                    data-title="{{ $game->title }}"
+                                    data-description="{{ $game->description }}"
+                                    data-price="{{ $game->price }}"
+                                    data-release_date="{{ optional($game->release_date)->format('Y-m-d') }}"
+                                    data-developer_id="{{ $game->developer_id }}"
+                                    data-publisher_id="{{ $game->publisher_id }}"
+                                    data-cover_image="{{ $game->cover_image }}"
+                                    data-genre_ids="{{ $game->genres->pluck('id')->implode(',') }}"
+                                >Edit Game</button>
+
+                                <form action="{{ route('admin.toggle', $game) }}" method="POST">
+                                    @csrf
+                                    <button class="btn" type="submit">Toggle Featured</button>
+                                </form>
+
+                                <form action="{{ route('admin.games.toggle-delist', $game) }}" method="POST">
+                                    @csrf
+                                    <button class="btn {{ $game->is_delisted ? '' : 'btn-danger' }}" type="submit">
+                                        {{ $game->is_delisted ? 'Relist' : 'Delist' }}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="game-body-grid">
+                            <div class="group pricing-segment">
+                                <h4>Select Price Tag and Display</h4>
+                                <form class="pricing-tag-form" action="{{ route('admin.games.pricing-tag', $game) }}" method="POST">
+                                    @csrf
+                                    <label class="pricing-tag-switch">
+                                        <span>Use pricing tag on public page</span>
+                                        <input class="admin-checkbox" type="checkbox" name="use_pricing_tag" value="1" {{ $game->use_pricing_tag ? 'checked' : '' }}>
+                                    </label>
+
+                                    <div class="pricing-tag-row">
+                                        <select class="selection-form" name="selected_pricing_id">
+                                            <option value="">No selected pricing</option>
+                                            @foreach($game->getGamePricing as $pricing)
+                                                <option class="selection-option" value="{{ $pricing->id }}" {{ (int) $game->selected_pricing_id === (int) $pricing->id ? 'selected' : '' }}>
+                                                    #{{ $pricing->id }} {{ $pricing->currency }} {{ number_format((float) $pricing->price, 2) }}
+                                                    @if(!is_null($pricing->discount_percentage))
+                                                        ({{ (float) $pricing->discount_percentage }}% off)
+                                                    @endif
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <button type="submit" class="btn">Save Pricing Tag</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="group pricing-segment">
+                                <h4>Create New Price Tag</h4>
+                                <form class="pricing-create-form" action="{{ route('admin.pricings.create', $game) }}" method="POST">
+                                    @csrf
+                                    <div class="form-grid">
+                                        <input type="number" name="price" step="0.01" min="0" placeholder="Base Price" required>
+                                        <input type="number" name="discount_percentage" step="0.01" min="0" max="100" placeholder="Discount %">
+                                        <input type="number" name="discounted_price" step="0.01" min="0" placeholder="Discounted Price">
+                                        <input type="text" name="currency" value="USD" maxlength="3" required>
+                                    </div>
+                                    <div class="inline-wrap pricing-create-actions">
+                                        <button type="submit" class="btn btn-primary">Add Pricing</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="group pricing-segment pricing-list-segment">
+                                <h4>Existing Pricing Entries</h4>
+                                <div class="media-list">
+                                    @forelse($game->getGamePricing as $pricing)
+                                        <div class="media-row pricing-row">
+                                            <form class="pricing-edit-form" action="{{ route('admin.pricings.update', [$game, $pricing]) }}" method="POST">
+                                                @csrf
+                                                <div class="form-grid pricing-edit-grid">
+                                                    <input type="number" name="price" step="0.01" min="0" value="{{ $pricing->price }}" required>
+                                                    <input type="number" name="discount_percentage" step="0.01" min="0" max="100" value="{{ $pricing->discount_percentage }}" placeholder="Discount %">
+                                                    <input type="number" name="discounted_price" step="0.01" min="0" value="{{ $pricing->discounted_price }}" placeholder="Discounted Price">
+                                                    <input type="text" name="currency" value="{{ $pricing->currency }}" maxlength="3" required>
+                                                </div>
+                                                <div class="inline-wrap pricing-edit-actions">
+                                                    <button type="submit" class="btn">Update</button>
+                                                </div>
+                                            </form>
+                                            <form action="{{ route('admin.pricings.delete', [$game, $pricing]) }}" method="POST">
+                                                @csrf
+                                                <button class="btn btn-danger" type="submit">Delete</button>
+                                            </form>
+                                        </div>
+                                    @empty
+                                        <div style="color:var(--text-muted);font-size:13px;">No pricing entries yet.</div>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="group media-segment">
+                            <h4>Media Manager</h4>
+                            <form action="{{ route('admin.media.create', $game) }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <div class="form-grid-2">
+                                    <textarea name="image_links" placeholder="Image URLs (one per line)"></textarea>
+                                    <textarea name="video_links" placeholder="Video URLs (one per line)"></textarea>
+                                </div>
+                                <div class="inline-wrap" style="margin-top:8px;">
+                                    <input style="max-width:360px;" type="file" name="image_files[]" multiple accept="image/*" class="media-file-input" data-preview-target="preview-{{ $game->id }}">
+                                    <button class="btn" type="submit">Add Media</button>
+                                </div>
+                                <div id="preview-{{ $game->id }}" class="preview-grid"></div>
+                            </form>
+
+                            <div class="media-list" style="margin-top:8px;">
+                                @forelse($game->media as $media)
+                                    <div class="media-row">
+                                        <div class="inline-wrap" style="align-items:center;">
+                                            @if($media->type === 'image')
+                                                <img class="media-preview" src="{{ $media->thumbnail_url ?: $media->url }}" alt="media">
+                                            @else
+                                                <span class="pill pill-muted">VIDEO</span>
+                                            @endif
+                                            <span style="font-size:12px;color:var(--text-muted);max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $media->url }}</span>
+                                        </div>
+                                        <form action="{{ route('admin.media.delete', [$game, $media]) }}" method="POST">
+                                            @csrf
+                                            <button class="btn btn-danger" type="submit">Remove</button>
+                                        </form>
+                                    </div>
+                                @empty
+                                    <div style="color:var(--text-muted);font-size:13px;">No media entries yet.</div>
+                                @endforelse
+                            </div>
                         </div>
                     </div>
                 </article>
@@ -206,7 +228,7 @@
             <h2 class="section-title">Genre Management</h2>
             <span style="color:var(--text-muted);font-size:13px;">Visible genres appear in top navigation and search filters.</span>
         </div>
-        <div style="padding: 0 16px 16px; overflow:auto;">
+        <div class="genre-scroll-wrap" style="padding: 0 16px 16px; overflow:auto;">
             <table class="table">
                 <thead>
                     <tr>

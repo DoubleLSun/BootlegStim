@@ -133,13 +133,65 @@ body {
     display: grid;
     gap: 14px;
     padding: 16px;
+    max-height: 100vh;
+    overflow-y: auto;
 }
 
 .game-card {
     background: var(--surface);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 14px;
+    padding: 10px 12px;
+}
+
+.game-bar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border: 0;
+    background: transparent;
+    color: var(--text-main);
+    cursor: pointer;
+    padding: 4px 2px;
+    text-align: left;
+}
+
+.game-bar-title {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.game-bar-toggle {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.04);
+    color: #fff;
+    font-size: 18px;
+    flex: 0 0 auto;
+}
+
+.game-card.is-expanded .game-bar-toggle {
+    transform: rotate(45deg);
+}
+
+.game-body {
+    margin-top: 12px;
+}
+
+.game-body-grid {
+    display: grid;
+    gap: 12px;
 }
 
 .game-top {
@@ -209,6 +261,93 @@ body {
     border-top: 1px solid var(--border-color);
 }
 
+.pricing-segment {
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(42, 55, 82, 0.9);
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.pricing-segment h4 {
+    margin-bottom: 10px;
+}
+
+.pricing-tag-form,
+.pricing-create-form,
+.pricing-edit-form {
+    display: grid;
+    gap: 10px;
+}
+
+.pricing-tag-switch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-main);
+    font-size: 13px;
+}
+
+.pricing-tag-switch .admin-checkbox {
+    /*align item to the left*/
+    margin: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.04);
+    cursor: pointer;
+}
+
+.pricing-tag-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+}
+
+.selection-form {
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-main);
+}
+
+.selection-form option,
+.selection-form optgroup,
+.selection-option {
+    background-color: #162137;
+    color: var(--text-main);
+}
+
+.selection-form option:checked,
+.selection-form option:hover,
+.selection-option:checked,
+.selection-option:hover {
+    background: #23416a;
+    color: #ffffff;
+}
+
+.pricing-create-actions,
+.pricing-edit-actions {
+    justify-content: flex-end;
+}
+
+.pricing-list-segment .media-list {
+    gap: 10px;
+}
+
+.pricing-row {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.pricing-edit-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.media-segment {
+    border-top-color: rgba(42, 55, 82, 0.7);
+}
+
 .group h4 {
     margin: 0 0 8px;
     font-size: 14px;
@@ -244,6 +383,10 @@ select {
     font-size: 13px;
 }
 
+select {
+    color-scheme: dark;
+}
+
 textarea {
     min-height: 72px;
     resize: vertical;
@@ -277,7 +420,6 @@ textarea {
 .table {
     width: 100%;
     border-collapse: collapse;
-    background: var(--accent-blue);
 }
 
 .table th,
@@ -298,6 +440,11 @@ textarea {
 .table td {
     color: var(--text-main);
     background: var(--card-bg);
+}
+
+.genre-scroll-wrap {
+    max-height: 560px;
+    overflow-y: auto;
 }
 
 .modal {
@@ -366,5 +513,18 @@ textarea {
     .header {
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .pricing-tag-row,
+    .pricing-edit-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .games-grid {
+        max-height: 520px;
+    }
+
+    .genre-scroll-wrap {
+        max-height: 520px;
     }
 }

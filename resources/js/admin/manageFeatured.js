@@ -126,4 +126,26 @@
             });
         });
     });
+
+    document.querySelectorAll('[data-game-card]').forEach((card) => {
+        const toggleButton = card.querySelector('[data-game-toggle]');
+        const body = card.querySelector('[data-game-body]');
+
+        if (!toggleButton || !body) {
+            return;
+        }
+
+        const setExpanded = (expanded) => {
+            card.classList.toggle('is-expanded', expanded);
+            card.classList.toggle('is-collapsed', !expanded);
+            toggleButton.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+            body.hidden = !expanded;
+        };
+
+        setExpanded(false);
+
+        toggleButton.addEventListener('click', () => {
+            setExpanded(!card.classList.contains('is-expanded'));
+        });
+    });
 })();

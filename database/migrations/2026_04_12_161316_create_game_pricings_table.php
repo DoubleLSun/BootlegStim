@@ -20,7 +20,7 @@ class CreateGamePricingsTable extends Migration
             $table->decimal('discount_percentage', 5, 2)->nullable();
             $table->decimal('discounted_price', 10, 2)->nullable();
             $table->string('currency', 3);
-            $table->unique('game_id');
+            $table->index('game_id');
             $table->foreign('game_id')->references('id')->on('games')->onDelete('cascade');
         });
     }

@@ -105,8 +105,6 @@ Route::post('/logout',  [AuthController::class, 'logout'])->name('logout');
 // Auth::routes();
 
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/manage-featured', [AdminController::class, 'manageFeatured'])->name('admin.manage');

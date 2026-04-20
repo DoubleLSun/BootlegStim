@@ -7,7 +7,7 @@ use App\Models\GameGenre;
 use App\Models\GameMedia;
 use App\Models\GamePricing;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class AdminController extends Controller
 {
@@ -300,8 +300,14 @@ class AdminController extends Controller
         $insertFromLinks($validated['video_links'] ?? null, 'video');
 
         foreach ($request->file('image_files', []) as $file) {
-            $path = $file->store('game-media', 'public');
-            $url = Storage::url($path);
+            $directory = public_path('game-media');
+            if (!File::exists($directory)) {
+                File::makeDirectory($directory, 0755, true);
+            }
+
+            $filename = uniqid('game_', true) . '.' . $file->getClientOriginalExtension();
+            $file->move($directory, $filename);
+            $url = asset('game-media/' . $filename);
             $nextSortOrder++;
 
             GameMedia::create([
