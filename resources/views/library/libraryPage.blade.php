@@ -29,7 +29,7 @@
 
         <div class="game-list" id="gameList">
             @foreach($games as $game)
-            <a href="{{ route('library.show', $game->id) }}"
+            <a href="{{ route('library.show', $game) }}"
                class="game-list-item {{ isset($selectedGame) && $selectedGame->id === $game->id ? 'active' : '' }}"
                data-name="{{ strtolower($game->title) }}"
                data-installed="{{ $game->pivot->is_installed ?? 0 }}">
@@ -75,7 +75,7 @@
             <h3 class="section-title">Recently Played</h3>
             <div class="recent-games-strip">
                 @foreach($recentGames as $game)
-                <a href="{{ route('library.show', $game->id) }}" class="recent-card">
+                <a href="{{ route('library.show', $game) }}" class="recent-card">
                     <img src="{{ $game->cover_image }}" alt="{{ $game->title }}">
                     <div class="recent-card-footer">
                         <div class="recent-card-name">{{ $game->title }}</div>
@@ -138,7 +138,7 @@
                 <span style="width:80px;text-align:right;">Status</span>
             </div>
             @foreach($games as $game)
-            <a href="{{ route('library.show', $game->id) }}" class="list-game-row"
+            <a href="{{ route('library.show', $game) }}" class="list-game-row"
                data-name="{{ strtolower($game->title) }}"
                data-installed="{{ $game->pivot->is_installed ?? 0 }}">
                 <img class="list-thumb"

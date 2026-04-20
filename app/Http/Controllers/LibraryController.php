@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Game;
 
 class LibraryController extends Controller
 {
@@ -34,13 +35,13 @@ class LibraryController extends Controller
     /**
      * Show a single game detail inside the library context.
      */
-    public function show($id)
+    public function show(Game $game)
     {
-        $user = Auth::user();;
+        $user = Auth::user();
 
         $selectedGame = $user->games()
             ->withPivot(['hours_played', 'is_installed', 'last_played'])
-            ->findOrFail($id);
+            ->findOrFail($game->id);
 
         $games = $user->games()
             ->withPivot(['hours_played', 'is_installed', 'last_played'])
@@ -54,6 +55,6 @@ class LibraryController extends Controller
             ->limit(6)
             ->get();
 
-        return view('library.libraryPage', compact('games', 'recentGames', 'selectedGame'));
+        return view('library.libraryPage', compact('games', 'recentGames', 'selectedGame','user'));
     }
 }

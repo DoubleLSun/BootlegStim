@@ -25,6 +25,7 @@ class UserSeeder extends Seeder
                 'last_online_at' => now(),
                 'created_at'     => now(),
                 'updated_at'     => now(),
+                'role'           => 'user',
             ],
             [
                 'name'           => 'PixelWitch',
@@ -40,6 +41,23 @@ class UserSeeder extends Seeder
                 'last_online_at' => now()->subHours(2),
                 'created_at'     => now(),
                 'updated_at'     => now(),
+                'role'           => 'user',
+            ],
+            [
+                'name'           => 'GameMaster',
+                'email'          => 'game@example.com',
+                'password'       => Hash::make('password'),
+                'avatar_url'     => null,
+                'banner_url'     => null,
+                'bio'            => 'Professional gamer and streamer.',
+                'location'       => 'Singapore',
+                'steam_level'    => 50,
+                'status'         => 'online',
+                'status_game_id' => null,
+                'last_online_at' => now(),
+                'created_at'     => now(),
+                'updated_at'     => now(),
+                'role'           => 'admin',
             ],
         ]);
     }

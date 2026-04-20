@@ -10,29 +10,30 @@ class GameReviewSeeder extends Seeder
 {
     public function run()
     {
-        $now = now();
+        // $now is used to ensure consistent timestamps for all seeded reviews
+        // $now = now();
 
         // Reviewer template users to guarantee stable user_id values for review seeds.
-        $reviewerTemplates = [
-            ['name' => 'Iris Walker', 'email' => 'iris.walker@example.com'],
-            ['name' => 'Kai Rhee', 'email' => 'kai.rhee@example.com'],
-            ['name' => 'Maya Torres', 'email' => 'maya.torres@example.com'],
-            ['name' => 'Noah Bennett', 'email' => 'noah.bennett@example.com'],
-            ['name' => 'Sana Aziz', 'email' => 'sana.aziz@example.com'],
-        ];
+        // $reviewerTemplates = [
+        //     ['name' => 'Iris Walker', 'email' => 'iris.walker@example.com'],
+        //     ['name' => 'Kai Rhee', 'email' => 'kai.rhee@example.com'],
+        //     ['name' => 'Maya Torres', 'email' => 'maya.torres@example.com'],
+        //     ['name' => 'Noah Bennett', 'email' => 'noah.bennett@example.com'],
+        //     ['name' => 'Sana Aziz', 'email' => 'sana.aziz@example.com'],
+        // ];
 
-        foreach ($reviewerTemplates as $reviewer) {
-            DB::table('users')->updateOrInsert(
-                ['email' => $reviewer['email']],
-                [
-                    'name' => $reviewer['name'],
-                    'password' => Hash::make('password'),
-                    'email_verified_at' => $now,
-                    'updated_at' => $now,
-                    'created_at' => $now,
-                ]
-            );
-        }
+        // foreach ($reviewerTemplates as $reviewer) {
+        //     DB::table('users')->updateOrInsert(
+        //         ['email' => $reviewer['email']],
+        //         [
+        //             'name' => $reviewer['name'],
+        //             'password' => Hash::make('password'),
+        //             'email_verified_at' => $now,
+        //             'updated_at' => $now,
+        //             'created_at' => $now,
+        //         ]
+        //     );
+        // }
 
         $gamesByTitle = DB::table('games')->pluck('id', 'title');
         if ($gamesByTitle->isEmpty()) {
@@ -96,6 +97,7 @@ class GameReviewSeeder extends Seeder
             ],
         ];
 
+        $now = now();
         $rows = [];
         foreach ($reviewTemplate as $gameTitle => $reviews) {
             $gameId = $gamesByTitle->get($gameTitle);

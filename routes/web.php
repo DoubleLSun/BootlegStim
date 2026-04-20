@@ -67,7 +67,7 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::middleware(['auth'])->group(function () {
 // Game Library
 Route::get('/library', [LibraryController::class, 'libraryPage'])->name('library.libraryPage');
-Route::get('/library/{id}', [LibraryController::class, 'show'])->name('library.show');
+Route::get('/library/{game}', [LibraryController::class, 'show'])->name('library.show');
 
 // Payment / Checkout
 Route::get('/checkout', [PaymentController::class, 'paymentPage'])->name('payment.paymentPage');
