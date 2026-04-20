@@ -5,6 +5,7 @@
     window.__steamNavInitialized = true;
 
     const nav = document.getElementById('steamNav');
+    // entire lower wrap should be retracted
     const lowerWrap = document.getElementById('steamNavLowerWrap');
     const recBtn = document.getElementById('recommendationsBtn');
     const recDropdown = document.getElementById('recommendationsDropdown');
@@ -23,8 +24,13 @@
             nav.classList.add('is-compact');
             recDropdown.classList.remove('is-open');
             recBtn.setAttribute('aria-expanded', 'false');
+            // retract animation to hide entire lower wrap
+            lowerWrap.style.animation = 'retract 0.3s forwards';
+            lowerWrap.style.display = 'none';
         } else if (delta < -4 || y <= 40) {
             nav.classList.remove('is-compact');
+            lowerWrap.style.animation = 'expand 0.3s forwards';
+            lowerWrap.style.display = 'block';
         }
 
         lastY = y;

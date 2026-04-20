@@ -208,8 +208,8 @@
             </div>
 
             <div class="success-actions">
-                <a href="{{ route('library.index') }}" class="btn-library">Go to Library</a>
-                <a href="{{ route('products.index') }}" class="btn-store">Continue Shopping</a>
+                <a href="{{ route('library.libraryPage') }}" class="btn-library">Go to Library</a>
+                <a href="{{ route('store.index') }}" class="btn-store">Continue Shopping</a>
             </div>
         </div>
     </div>

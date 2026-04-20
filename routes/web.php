@@ -31,13 +31,6 @@ Route::get('/', function () {
     return redirect()->route('store.index');
 });
 
-
-
-// --- main store page  ---//
-
-Route::get('/store', [StoreController::class, 'index'])->name('store.index');
-
-
 // --- Main store page ---
 Route::get('/store', [StoreController::class, 'index'])->name('store.index');
 
@@ -65,15 +58,16 @@ Route::prefix('test')->name('test.')->middleware('auth')->group(function () {
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::middleware(['auth'])->group(function () {
-// Game Library
-Route::get('/library', [LibraryController::class, 'libraryPage'])->name('library.libraryPage');
-Route::get('/library/{game}', [LibraryController::class, 'show'])->name('library.show');
+    // Game Library
+    Route::get('/library', [LibraryController::class, 'libraryPage'])->name('library.libraryPage');
+    Route::get('/library/{game}', [LibraryController::class, 'show'])->name('library.show');
 
-// Payment / Checkout
-Route::get('/checkout', [PaymentController::class, 'paymentPage'])->name('payment.paymentPage');
-Route::post('/checkout/process', [PaymentController::class, 'process'])->name('payment.process');
-Route::post('/checkout/promo', [PaymentController::class, 'applyPromo'])->name('payment.promo');
-Route::post('/checkout/wallet', [PaymentController::class, 'toggleWallet'])->name('payment.wallet.toggle');
+    // Payment / Checkout
+    Route::get('/checkout', [PaymentController::class, 'paymentPage'])->name('payment.paymentPage');
+    Route::post('/checkout', [PaymentController::class, 'startCheckout'])->name('payment.start');
+    Route::post('/checkout/process', [PaymentController::class, 'process'])->name('payment.process');
+    Route::post('/checkout/promo', [PaymentController::class, 'applyPromo'])->name('payment.promo');
+    Route::post('/checkout/wallet', [PaymentController::class, 'toggleWallet'])->name('payment.wallet.toggle');
 });
 
 // Profile pages (auth required)
