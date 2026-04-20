@@ -24,9 +24,11 @@ class SearchController extends Controller
             ->orderBy('name')
             ->get();
 
-        $gamesQuery = Game::query()->with(['genres' => function ($q) {
+        $gamesQuery = Game::query()
+            ->where('is_delisted', false)
+            ->with(['genres' => function ($q) {
             $q->where('display_flag', true)->orderBy('name');
-        }]);
+            }]);
 
         if ($queryText !== '') {
             $gamesQuery->where('title', 'like', '%' . $queryText . '%');
@@ -69,6 +71,7 @@ class SearchController extends Controller
 
         $results = Game::query()
             ->select(['id', 'title', 'cover_image'])
+            ->where('is_delisted', false)
             ->where('title', 'like', '%' . $queryText . '%')
             ->orderBy('title')
             ->limit(3)

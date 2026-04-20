@@ -40,6 +40,9 @@ class Game extends Model
         'price',
         'release_date',
         'is_featured',
+        'is_delisted',
+        'use_pricing_tag',
+        'selected_pricing_id',
         'created_by',
         'developer_id',
         'publisher_id',
@@ -54,6 +57,8 @@ class Game extends Model
     protected $casts = [
         'release_date' => 'date',
         'is_featured'  => 'boolean',
+        'is_delisted'  => 'boolean',
+        'use_pricing_tag' => 'boolean',
         'price'        => 'decimal:2',
     ];
 

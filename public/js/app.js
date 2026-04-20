@@ -27564,6 +27564,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ },
 
+/***/ "./resources/css/admin/manageFeatured.css"
+/*!************************************************!*\
+  !*** ./resources/css/admin/manageFeatured.css ***!
+  \************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ },
+
 /***/ "./node_modules/object-assign/index.js"
 /*!*********************************************!*\
   !*** ./node_modules/object-assign/index.js ***!
@@ -58967,6 +58980,7 @@ module.exports = /*#__PURE__*/JSON.parse('{"name":"axios","version":"0.21.4","de
 /******/ 		var installedChunks = {
 /******/ 			"/js/app": 0,
 /******/ 			"css/app": 0,
+/******/ 			"css/admin/manageFeatured": 0,
 /******/ 			"css/cart/cartPage": 0,
 /******/ 			"css/navigation/topNavbar": 0
 /******/ 		};
@@ -59018,10 +59032,11 @@ module.exports = /*#__PURE__*/JSON.parse('{"name":"axios","version":"0.21.4","de
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	__webpack_require__.O(undefined, ["css/app","css/cart/cartPage","css/navigation/topNavbar"], () => (__webpack_require__("./resources/js/app.js")))
-/******/ 	__webpack_require__.O(undefined, ["css/app","css/cart/cartPage","css/navigation/topNavbar"], () => (__webpack_require__("./resources/css/app.css")))
-/******/ 	__webpack_require__.O(undefined, ["css/app","css/cart/cartPage","css/navigation/topNavbar"], () => (__webpack_require__("./resources/css/navigation/topNavbar.css")))
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["css/app","css/cart/cartPage","css/navigation/topNavbar"], () => (__webpack_require__("./resources/css/cart/cartPage.css")))
+/******/ 	__webpack_require__.O(undefined, ["css/app","css/admin/manageFeatured","css/cart/cartPage","css/navigation/topNavbar"], () => (__webpack_require__("./resources/js/app.js")))
+/******/ 	__webpack_require__.O(undefined, ["css/app","css/admin/manageFeatured","css/cart/cartPage","css/navigation/topNavbar"], () => (__webpack_require__("./resources/css/app.css")))
+/******/ 	__webpack_require__.O(undefined, ["css/app","css/admin/manageFeatured","css/cart/cartPage","css/navigation/topNavbar"], () => (__webpack_require__("./resources/css/navigation/topNavbar.css")))
+/******/ 	__webpack_require__.O(undefined, ["css/app","css/admin/manageFeatured","css/cart/cartPage","css/navigation/topNavbar"], () => (__webpack_require__("./resources/css/cart/cartPage.css")))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["css/app","css/admin/manageFeatured","css/cart/cartPage","css/navigation/topNavbar"], () => (__webpack_require__("./resources/css/admin/manageFeatured.css")))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()

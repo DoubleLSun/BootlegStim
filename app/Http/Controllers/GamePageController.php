@@ -13,6 +13,10 @@ class GamePageController extends Controller
 {
     public function show(Request $request, Game $game)
     {
+        if ($game->is_delisted && (!auth()->check() || (string) (auth()->user()->role ?? '') !== 'admin')) {
+            abort(404);
+        }
+
         // Load the media items and reviews for the game
         $game->load([
             'media' => function ($query) {
@@ -60,9 +64,22 @@ class GamePageController extends Controller
         // Use the URL of the active media if available, otherwise fall back to the default image
         $selectedImage = optional($activeMedia)->url ?? $defaultImage;
 
-        $pricingRow = DB::table('game_pricings')
-            ->where('game_id', $game->id)
-            ->first();
+        $pricingRow = null;
+        if ($game->use_pricing_tag) {
+            if (!empty($game->selected_pricing_id)) {
+                $pricingRow = DB::table('game_pricings')
+                    ->where('id', $game->selected_pricing_id)
+                    ->where('game_id', $game->id)
+                    ->first();
+            }
+
+            if (!$pricingRow) {
+                $pricingRow = DB::table('game_pricings')
+                    ->where('game_id', $game->id)
+                    ->orderBy('id')
+                    ->first();
+            }
+        }
 
         $originalPrice = $pricingRow->price ?? $game->price ?? 0;
         $discountedPrice = $pricingRow->discounted_price ?? null;
@@ -95,6 +112,7 @@ class GamePageController extends Controller
             'has_discount' => $hasDiscount,
             'discount_percent' => $pricingRow->discount_percentage ?? null,
             'discounted_price' => $hasDiscount ? (float) $discountedPrice : null,
+            'is_applied' => (bool) $game->use_pricing_tag,
         ];
         
         // Pass the game, media items, selected image, and active thumbnail ID to the view

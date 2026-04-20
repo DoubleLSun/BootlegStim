@@ -1,6 +1,8 @@
 {
     "/js/app.js": "/js/app.js",
+    "/js/admin/manageFeatured.js": "/js/admin/manageFeatured.js",
     "/css/app.css": "/css/app.css",
+    "/css/admin/manageFeatured.css": "/css/admin/manageFeatured.css",
     "/css/cart/cartPage.css": "/css/cart/cartPage.css",
     "/css/navigation/topNavbar.css": "/css/navigation/topNavbar.css"
 }

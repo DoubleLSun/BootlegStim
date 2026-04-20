@@ -13,6 +13,8 @@ const mix = require('laravel-mix');
 
 mix.js('resources/js/app.js', 'public/js')
     .react()
+    .js('resources/js/admin/manageFeatured.js', 'public/js/admin')
     .postCss('resources/css/app.css', 'public/css')
     .postCss('resources/css/navigation/topNavbar.css', 'public/css/navigation')
-    .postCss('resources/css/cart/cartPage.css', 'public/css/cart');
+    .postCss('resources/css/cart/cartPage.css', 'public/css/cart')
+    .postCss('resources/css/admin/manageFeatured.css', 'public/css/admin');

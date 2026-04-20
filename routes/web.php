@@ -110,6 +110,22 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/manage-featured', [AdminController::class, 'manageFeatured'])->name('admin.manage');
+
     Route::post('/admin/games/{game}/toggle', [AdminController::class, 'toggleFeatured'])->name('admin.toggle');
+    Route::post('/admin/games', [AdminController::class, 'createGame'])->name('admin.games.create');
+    Route::post('/admin/games/{game}/update', [AdminController::class, 'updateGame'])->name('admin.games.update');
+    Route::post('/admin/games/{game}/toggle-delist', [AdminController::class, 'toggleDelisted'])->name('admin.games.toggle-delist');
+
+    Route::post('/admin/games/{game}/pricing-tag', [AdminController::class, 'setPricingTag'])->name('admin.games.pricing-tag');
+    Route::post('/admin/games/{game}/pricings', [AdminController::class, 'createPricing'])->name('admin.pricings.create');
+    Route::post('/admin/games/{game}/pricings/{pricing}/update', [AdminController::class, 'updatePricing'])->name('admin.pricings.update');
+    Route::post('/admin/games/{game}/pricings/{pricing}/delete', [AdminController::class, 'deletePricing'])->name('admin.pricings.delete');
+
+    Route::post('/admin/games/{game}/media', [AdminController::class, 'addMedia'])->name('admin.media.create');
+    Route::post('/admin/games/{game}/media/{media}/delete', [AdminController::class, 'deleteMedia'])->name('admin.media.delete');
+
+    Route::post('/admin/genres', [AdminController::class, 'createGenre'])->name('admin.genres.create');
+    Route::post('/admin/genres/{genre}/update', [AdminController::class, 'updateGenre'])->name('admin.genres.update');
+    Route::post('/admin/genres/{genre}/delete', [AdminController::class, 'deleteGenre'])->name('admin.genres.delete');
     Route::post('/admin/genres/{genre}/toggle-display', [AdminController::class, 'toggleGenreDisplay'])->name('admin.genres.toggle-display');
 });

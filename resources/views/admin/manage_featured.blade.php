@@ -1,340 +1,363 @@
 @extends('layouts.app')
 
-@section('title', 'Admin | Manage Featured Games')
+@section('title', 'Admin | Content Control')
 
 @push('styles')
-<style>
-    :root {
-        --bg-dark: #0f172a;
-        --card-bg: #1e293b;
-        --accent-blue: #38bdf8;
-        --accent-green: #10b981;
-        --text-main: #ffffff; /* Forced to pure white */
-        --text-muted: #94a3b8;
-        --border-color: #334155;
-    }
-
-    body {
-        background-color: var(--bg-dark);
-        color: var(--text-main);
-        font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        -webkit-font-smoothing: antialiased;
-    }
-
-    .admin-container {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 60px 20px;
-    }
-
-    /* HEADER - ENHANCED WHITE TITLE */
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        margin-bottom: 40px;
-        border-bottom: 1px solid var(--border-color);
-        padding-bottom: 24px;
-    }
-
-    .title-group h1 {
-        font-size: 36px; /* Slightly bigger */
-        font-weight: 900; /* Extra bold */
-        letter-spacing: -1.5px;
-        margin: 0;
-        color: #ffffff; /* Solid White */
-        text-transform: tight;
-    }
-
-    .title-group p {
-        color: var(--text-muted);
-        margin: 8px 0 0 0;
-        font-size: 15px;
-    }
-
-    .back-link {
-        color: var(--text-muted);
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: 600;
-        padding: 10px 20px;
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.05);
-        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 1px solid var(--border-color);
-    }
-
-    .back-link:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: #ffffff;
-        transform: translateY(-2px);
-    }
-
-    /* TABLE DESIGN */
-    .table-wrapper {
-        background: var(--card-bg);
-        border-radius: 16px;
-        border: 1px solid var(--border-color);
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-        overflow: hidden;
-    }
-
-    .section-title {
-        margin: 34px 0 12px;
-        font-size: 18px;
-        color: #fff;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-    }
-
-    th {
-        background: rgba(15, 23, 42, 0.8);
-        color: var(--text-muted);
-        font-size: 13px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        padding: 22px 24px;
-        text-align: left;
-    }
-
-    td {
-        padding: 20px 24px;
-        border-top: 1px solid var(--border-color);
-        vertical-align: middle;
-    }
-
-    /* GAME ELEMENT */
-    .game-info {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
-
-    .game-thumbnail-wrapper {
-        width: 110px; /* Bigger thumbnail */
-        height: 62px;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-        border: 1px solid var(--border-color);
-    }
-
-    .game-thumbnail {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .game-title {
-        font-weight: 700;
-        font-size: 18px; /* Bigger Title */
-        color: #ffffff;
-    }
-
-    /* BIGGER BADGE SYSTEM */
-    .toggle-container {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        gap: 16px;
-    }
-
-    .badge {
-        font-size: 13px; /* Much bigger */
-        padding: 6px 14px;
-        border-radius: 8px; /* Squared off slightly for a pro look */
-        font-weight: 800;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        border: 1px solid transparent;
-        transition: 0.4s;
-    }
-
-    .badge-standard {
-        background: rgba(148, 163, 184, 0.1);
-        color: #cbd5e1;
-        border-color: rgba(148, 163, 184, 0.3);
-    }
-
-    .badge-featured {
-        background: rgba(16, 185, 129, 0.15);
-        color: var(--accent-green);
-        border-color: rgba(16, 185, 129, 0.4);
-        box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
-    }
-
-    /* ENHANCED SWITCH */
-    .switch {
-        position: relative;
-        display: inline-block;
-        width: 60px; /* Wider switch */
-        height: 30px;
-    }
-
-    .switch input { opacity: 0; width: 0; height: 0; }
-
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background-color: #334151;
-        transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
-        border-radius: 34px;
-        border: 1px solid var(--border-color);
-    }
-
-    .slider:before {
-        position: absolute;
-        content: "";
-        height: 22px;
-        width: 22px;
-        left: 4px;
-        bottom: 3px;
-        background-color: #fff;
-        transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
-        border-radius: 50%;
-    }
-
-    input:checked + .slider {
-        background-color: var(--accent-green);
-        border-color: #10b981;
-    }
-
-    input:checked + .slider:before {
-        transform: translateX(28px);
-    }
-
-    tbody tr:hover {
-        background: rgba(255, 255, 255, 0.02);
-    }
-</style>
+<link href="{{ asset('css/admin/manageFeatured.css') }}" rel="stylesheet">
 @endpush
 
 @section('content')
-<div class="admin-container">
-
+<div
+    class="admin-container"
+    id="admin-page-root"
+    data-game-create-route="{{ route('admin.games.create') }}"
+    data-genre-create-route="{{ route('admin.genres.create') }}"
+>
     <div class="header">
         <div class="title-group">
-            <h1>Featured Content Manager</h1>
-            <p>Manage which games are featured on the store.</p>
+            <h1>Admin Content Control</h1>
+            <p>Manage games, genres, pricing tags, and media from one panel.</p>
         </div>
-        <a href="{{ route('store.index') }}" class="back-link">
-            <span>&larr;</span> Exit Admin
-        </a>
+        <div class="header-actions">
+            <button type="button" class="btn btn-primary" data-open-modal="gameModal" data-mode="create">+ New Game</button>
+            <button type="button" class="btn" data-open-modal="genreModal" data-mode="create">+ New Genre</button>
+            <a href="{{ route('store.index') }}" class="btn">Exit Admin</a>
+        </div>
     </div>
 
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th>Game Assets & Info</th>
-                    <th style="text-align: right; padding-right: 50px;">Visibility Control</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($allGames as $game)
-                    <tr>
-                        <td>
-                            <div class="game-info">
-                                <div class="game-thumbnail-wrapper">
-                                    <img src="{{ $game->cover_image }}" alt="{{ $game->title }}" class="game-thumbnail">
+    @if(session('success'))
+        <div class="status-box">{{ session('success') }}</div>
+    @endif
+
+    @if($errors->any())
+        <div class="error-box">
+            @foreach($errors->all() as $error)
+                <div>{{ $error }}</div>
+            @endforeach
+        </div>
+    @endif
+
+    <section class="section">
+        <div class="section-header">
+            <h2 class="section-title">Game Management</h2>
+            <span style="color:var(--text-muted);font-size:13px;">No hard delete. Use delist to hide publicly.</span>
+        </div>
+
+        <div class="games-grid">
+            @forelse($allGames as $game)
+                <article class="game-card">
+                    <div class="game-top">
+                        <div class="game-info">
+                            @if($game->cover_image)
+                                <img class="game-thumb" src="{{ $game->cover_image }}" alt="{{ $game->title }}">
+                            @else
+                                <div class="game-thumb" style="display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:11px;">No Cover</div>
+                            @endif
+                            <div class="game-meta">
+                                <h3>{{ $game->title }}</h3>
+                                <p>Game ID: {{ $game->id }} | Dev: {{ $game->developer_id }} | Publisher: {{ $game->publisher_id }}</p>
+                                <p>Genres:
+                                    @forelse($game->genres as $genre)
+                                        <span class="pill pill-muted">{{ $genre->name }}</span>
+                                    @empty
+                                        <span class="pill pill-muted">None</span>
+                                    @endforelse
+                                </p>
+                                <div>
+                                    <span class="pill {{ $game->is_featured ? 'pill-ok' : 'pill-muted' }}">{{ $game->is_featured ? 'Featured' : 'Not Featured' }}</span>
+                                    <span class="pill {{ $game->is_delisted ? 'pill-danger' : 'pill-ok' }}">{{ $game->is_delisted ? 'Delisted' : 'Listed' }}</span>
                                 </div>
-                                <span class="game-title">{{ $game->title }}</span>
                             </div>
-                        </td>
-                        <td>
-                            <form action="{{ route('admin.toggle', $game->id) }}" method="POST" id="toggle-form-{{ $game->id }}">
+                        </div>
+
+                        <div class="inline-wrap">
+                            <button
+                                type="button"
+                                class="btn"
+                                data-open-modal="gameModal"
+                                data-mode="edit"
+                                data-action="{{ route('admin.games.update', $game) }}"
+                                data-title="{{ $game->title }}"
+                                data-description="{{ $game->description }}"
+                                data-price="{{ $game->price }}"
+                                data-release_date="{{ optional($game->release_date)->format('Y-m-d') }}"
+                                data-developer_id="{{ $game->developer_id }}"
+                                data-publisher_id="{{ $game->publisher_id }}"
+                                data-cover_image="{{ $game->cover_image }}"
+                                data-genre_ids="{{ $game->genres->pluck('id')->implode(',') }}"
+                            >Edit Game</button>
+
+                            <form action="{{ route('admin.toggle', $game) }}" method="POST">
                                 @csrf
-                                <div class="toggle-container">
-                                    
-                                    <span class="badge {{ $game->is_featured ? '' : 'badge-standard' }}" 
-                                          style="opacity: {{ $game->is_featured ? '0.15' : '1' }}">
-                                        Standard
-                                    </span>
-
-                                    <label class="switch">
-                                        <input type="checkbox" 
-                                               {{ $game->is_featured ? 'checked' : '' }} 
-                                               onchange="document.getElementById('toggle-form-{{ $game->id }}').submit()">
-                                        <span class="slider"></span>
-                                    </label>
-
-                                    <span class="badge {{ $game->is_featured ? 'badge-featured' : '' }}" 
-                                          style="opacity: {{ !$game->is_featured ? '0.15' : '1' }}">
-                                        Featured
-                                    </span>
-
-                                </div>
+                                <button class="btn" type="submit">Toggle Featured</button>
                             </form>
-                        </td>
-                    </tr>
-                @empty
+
+                            <form action="{{ route('admin.games.toggle-delist', $game) }}" method="POST">
+                                @csrf
+                                <button class="btn {{ $game->is_delisted ? '' : 'btn-danger' }}" type="submit">
+                                    {{ $game->is_delisted ? 'Relist' : 'Delist' }}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <h4>Pricing Tag and Pricing Options</h4>
+                        <form class="inline-wrap" action="{{ route('admin.games.pricing-tag', $game) }}" method="POST">
+                            @csrf
+                            <label style="display:flex;align-items:center;gap:6px;">
+                                <input type="checkbox" name="use_pricing_tag" value="1" {{ $game->use_pricing_tag ? 'checked' : '' }}>
+                                <span>Use Pricing Tag</span>
+                            </label>
+                            <select name="selected_pricing_id">
+                                <option value="">No selected pricing</option>
+                                @foreach($game->getGamePricing as $pricing)
+                                    <option value="{{ $pricing->id }}" {{ (int) $game->selected_pricing_id === (int) $pricing->id ? 'selected' : '' }}>
+                                        #{{ $pricing->id }} {{ $pricing->currency }} {{ number_format((float) $pricing->price, 2) }}
+                                        @if(!is_null($pricing->discount_percentage))
+                                            ({{ (float) $pricing->discount_percentage }}% off)
+                                        @endif
+                                    </option>
+                                @endforeach
+                            </select>
+                            <button type="submit" class="btn">Save Pricing Tag</button>
+                        </form>
+
+                        <div style="margin-top:8px;" class="media-list">
+                            @forelse($game->getGamePricing as $pricing)
+                                <div class="media-row">
+                                    <form class="form-grid" action="{{ route('admin.pricings.update', [$game, $pricing]) }}" method="POST">
+                                        @csrf
+                                        <input type="number" name="price" step="0.01" min="0" value="{{ $pricing->price }}" required>
+                                        <input type="number" name="discount_percentage" step="0.01" min="0" max="100" value="{{ $pricing->discount_percentage }}" placeholder="Discount %">
+                                        <input type="number" name="discounted_price" step="0.01" min="0" value="{{ $pricing->discounted_price }}" placeholder="Discounted Price">
+                                        <div class="inline-wrap">
+                                            <input style="max-width:90px;" type="text" name="currency" value="{{ $pricing->currency }}" maxlength="3" required>
+                                            <button type="submit" class="btn">Update</button>
+                                        </div>
+                                    </form>
+                                    <form action="{{ route('admin.pricings.delete', [$game, $pricing]) }}" method="POST">
+                                        @csrf
+                                        <button class="btn btn-danger" type="submit">Delete</button>
+                                    </form>
+                                </div>
+                            @empty
+                                <div style="color:var(--text-muted);font-size:13px;">No pricing entries yet.</div>
+                            @endforelse
+                        </div>
+
+                        <form class="form-grid" style="margin-top:8px;" action="{{ route('admin.pricings.create', $game) }}" method="POST">
+                            @csrf
+                            <input type="number" name="price" step="0.01" min="0" placeholder="Base Price" required>
+                            <input type="number" name="discount_percentage" step="0.01" min="0" max="100" placeholder="Discount %">
+                            <input type="number" name="discounted_price" step="0.01" min="0" placeholder="Discounted Price">
+                            <div class="inline-wrap">
+                                <input style="max-width:90px;" type="text" name="currency" value="USD" maxlength="3" required>
+                                <button type="submit" class="btn">Add Pricing</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="group">
+                        <h4>Media Manager</h4>
+                        <form action="{{ route('admin.media.create', $game) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="form-grid-2">
+                                <textarea name="image_links" placeholder="Image URLs (one per line)"></textarea>
+                                <textarea name="video_links" placeholder="Video URLs (one per line)"></textarea>
+                            </div>
+                            <div class="inline-wrap" style="margin-top:8px;">
+                                <input style="max-width:360px;" type="file" name="image_files[]" multiple accept="image/*" class="media-file-input" data-preview-target="preview-{{ $game->id }}">
+                                <button class="btn" type="submit">Add Media</button>
+                            </div>
+                            <div id="preview-{{ $game->id }}" class="preview-grid"></div>
+                        </form>
+
+                        <div class="media-list" style="margin-top:8px;">
+                            @forelse($game->media as $media)
+                                <div class="media-row">
+                                    <div class="inline-wrap" style="align-items:center;">
+                                        @if($media->type === 'image')
+                                            <img class="media-preview" src="{{ $media->thumbnail_url ?: $media->url }}" alt="media">
+                                        @else
+                                            <span class="pill pill-muted">VIDEO</span>
+                                        @endif
+                                        <span style="font-size:12px;color:var(--text-muted);max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $media->url }}</span>
+                                    </div>
+                                    <form action="{{ route('admin.media.delete', [$game, $media]) }}" method="POST">
+                                        @csrf
+                                        <button class="btn btn-danger" type="submit">Remove</button>
+                                    </form>
+                                </div>
+                            @empty
+                                <div style="color:var(--text-muted);font-size:13px;">No media entries yet.</div>
+                            @endforelse
+                        </div>
+                    </div>
+                </article>
+            @empty
+                <div style="color:var(--text-muted);">No games found.</div>
+            @endforelse
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-header">
+            <h2 class="section-title">Genre Management</h2>
+            <span style="color:var(--text-muted);font-size:13px;">Visible genres appear in top navigation and search filters.</span>
+        </div>
+        <div style="padding: 0 16px 16px; overflow:auto;">
+            <table class="table">
+                <thead>
                     <tr>
-                        <td colspan="2" style="padding: 60px; text-align: center; color: var(--text-muted);">
-                            No titles found in the database.
-                        </td>
+                        <th>Name</th>
+                        <th>Slug</th>
+                        <th>Games</th>
+                        <th>Visible</th>
+                        <th>Actions</th>
                     </tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @forelse($allGenres as $genre)
+                        <tr>
+                            <td>{{ $genre->name }}</td>
+                            <td>{{ $genre->slug }}</td>
+                            <td>{{ $genre->games_count }}</td>
+                            <td>{{ $genre->display_flag ? 'Yes' : 'No' }}</td>
+                            <td>
+                                <div class="inline-wrap">
+                                    <button
+                                        type="button"
+                                        class="btn"
+                                        data-open-modal="genreModal"
+                                        data-mode="edit"
+                                        data-action="{{ route('admin.genres.update', $genre) }}"
+                                        data-name="{{ $genre->name }}"
+                                        data-slug="{{ $genre->slug }}"
+                                        data-description="{{ $genre->description }}"
+                                        data-display_flag="{{ $genre->display_flag ? 1 : 0 }}"
+                                    >Edit</button>
+
+                                    <form action="{{ route('admin.genres.toggle-display', $genre) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn">Toggle Visibility</button>
+                                    </form>
+
+                                    <form action="{{ route('admin.genres.delete', $genre) }}" method="POST" onsubmit="return confirm('Delete this genre?')">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="5" style="color:var(--text-muted);">No genres found.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <div class="modal" id="gameModal" aria-hidden="true">
+        <div class="modal-card">
+            <div class="modal-head">
+                <strong id="gameModalTitle">Create Game</strong>
+                <button type="button" class="btn" data-close-modal="gameModal">Close</button>
+            </div>
+            <div class="modal-body">
+                <form id="gameForm" action="{{ route('admin.games.create') }}" method="POST">
+                    @csrf
+                    <div class="form-grid-2">
+                        <div>
+                            <label>Title</label>
+                            <input type="text" name="title" id="game-title" required>
+                        </div>
+                        <div>
+                            <label>Cover Image URL</label>
+                            <input type="url" name="cover_image" id="game-cover_image">
+                        </div>
+                    </div>
+
+                    <div style="margin-top:8px;">
+                        <label>Description</label>
+                        <textarea name="description" id="game-description" required></textarea>
+                    </div>
+
+                    <div class="form-grid" style="margin-top:8px;">
+                        <div>
+                            <label>Price</label>
+                            <input type="number" step="0.01" min="0" name="price" id="game-price" required>
+                        </div>
+                        <div>
+                            <label>Release Date</label>
+                            <input type="date" name="release_date" id="game-release_date" required>
+                        </div>
+                        <div>
+                            <label>Developer ID</label>
+                            <input type="number" min="1" name="developer_id" id="game-developer_id" required>
+                        </div>
+                        <div>
+                            <label>Publisher ID</label>
+                            <input type="number" min="1" name="publisher_id" id="game-publisher_id" required>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:8px;">
+                        <label>Genres</label>
+                        <select id="game-genre_ids" name="genre_ids[]" multiple size="6">
+                            @foreach($allGenres as $genre)
+                                <option value="{{ $genre->id }}">{{ $genre->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="inline-wrap" style="margin-top:12px;justify-content:flex-end;">
+                        <button type="submit" class="btn btn-primary">Save Game</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
-    <h2 class="section-title">Genre Visibility</h2>
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th>Genre</th>
-                    <th style="text-align: right; padding-right: 50px;">Display Flag</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($allGenres as $genre)
-                    <tr>
-                        <td>
-                            <div class="game-info" style="gap:12px;">
-                                <span class="game-title" style="font-size:16px;">{{ $genre->name }}</span>
-                                <span style="font-size:12px;color:var(--text-muted);">{{ $genre->games_count }} games</span>
-                            </div>
-                        </td>
-                        <td>
-                            <form action="{{ route('admin.genres.toggle-display', $genre) }}" method="POST" id="toggle-genre-form-{{ $genre->id }}">
-                                @csrf
-                                <div class="toggle-container">
-                                    <span class="badge {{ $genre->display_flag ? '' : 'badge-standard' }}" style="opacity: {{ $genre->display_flag ? '0.15' : '1' }}">
-                                        Hidden
-                                    </span>
-
-                                    <label class="switch">
-                                        <input
-                                            type="checkbox"
-                                            {{ $genre->display_flag ? 'checked' : '' }}
-                                            onchange="document.getElementById('toggle-genre-form-{{ $genre->id }}').submit()"
-                                        >
-                                        <span class="slider"></span>
-                                    </label>
-
-                                    <span class="badge {{ $genre->display_flag ? 'badge-featured' : '' }}" style="opacity: {{ !$genre->display_flag ? '0.15' : '1' }}">
-                                        Visible
-                                    </span>
-                                </div>
-                            </form>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="2" style="padding: 40px; text-align: center; color: var(--text-muted);">
-                            No genres found.
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+    <div class="modal" id="genreModal" aria-hidden="true">
+        <div class="modal-card" style="max-width:620px;">
+            <div class="modal-head">
+                <strong id="genreModalTitle">Create Genre</strong>
+                <button type="button" class="btn" data-close-modal="genreModal">Close</button>
+            </div>
+            <div class="modal-body">
+                <form id="genreForm" action="{{ route('admin.genres.create') }}" method="POST">
+                    @csrf
+                    <div class="form-grid-2">
+                        <div>
+                            <label>Name</label>
+                            <input type="text" name="name" id="genre-name" required>
+                        </div>
+                        <div>
+                            <label>Slug</label>
+                            <input type="text" name="slug" id="genre-slug" required>
+                        </div>
+                    </div>
+                    <div style="margin-top:8px;">
+                        <label>Description</label>
+                        <textarea name="description" id="genre-description"></textarea>
+                    </div>
+                    <div style="margin-top:8px;">
+                        <label style="display:flex;align-items:center;gap:8px;">
+                            <input type="checkbox" name="display_flag" id="genre-display_flag" value="1" checked>
+                            <span>Display in public navigation/search</span>
+                        </label>
+                    </div>
+                    <div class="inline-wrap" style="margin-top:12px;justify-content:flex-end;">
+                        <button type="submit" class="btn btn-primary">Save Genre</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="{{ asset('js/admin/manageFeatured.js') }}" defer></script>
+@endpush

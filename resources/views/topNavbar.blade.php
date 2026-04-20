@@ -26,6 +26,11 @@
 				<span class="steam-profile-label">{{ $displayUserName }}</span>
 				<div class="steam-profile-menu-panel" role="menu" aria-label="Profile menu">
 					<button class="steam-nav-user" onclick="window.location.href='{{ route('profile') }}'">Profile</button>
+					@auth
+						@if((string) (auth()->user()->role ?? '') === 'admin')
+							<button class="steam-nav-user" onclick="window.location.href='{{ route('admin.manage') }}'">Admin Dashboard</button>
+						@endif
+					@endauth
 					<form action="{{ route('logout') }}" method="POST" onsubmit="return confirm('Are you sure you want to log out?');">
 						@csrf
 						<button type="submit" class="nav-logout">Log Out</button>

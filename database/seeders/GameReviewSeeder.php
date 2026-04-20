@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class GameReviewSeeder extends Seeder
 {
@@ -40,13 +39,15 @@ class GameReviewSeeder extends Seeder
             return;
         }
 
-        $usersByEmail = DB::table('users')->pluck('id', 'email');
+        $userIds = DB::table('users')->pluck('id')->values();
+        if ($userIds->isEmpty()) {
+            return;
+        }
 
         // Dummy data template for GameReview model, grouped by game title.
         $reviewTemplate = [
             'The Witcher 3: Wild Hunt' => [
                 [
-                    'email' => 'iris.walker@example.com',
                     'is_recommended' => true,
                     'rating' => 10,
                     'review_content' => 'Massive world, strong writing, and side quests that feel like full stories.',
@@ -55,7 +56,6 @@ class GameReviewSeeder extends Seeder
                     'review_date' => '2026-04-03 11:20:00',
                 ],
                 [
-                    'email' => 'kai.rhee@example.com',
                     'is_recommended' => true,
                     'rating' => 9,
                     'review_content' => 'Combat takes time to click, but once it does it is very rewarding.',
@@ -66,7 +66,6 @@ class GameReviewSeeder extends Seeder
             ],
             'Cyberpunk 2077' => [
                 [
-                    'email' => 'maya.torres@example.com',
                     'is_recommended' => true,
                     'rating' => 8,
                     'review_content' => 'Great atmosphere and story arcs. Night City feels alive after updates.',
@@ -75,7 +74,6 @@ class GameReviewSeeder extends Seeder
                     'review_date' => '2026-04-06 09:10:00',
                 ],
                 [
-                    'email' => 'noah.bennett@example.com',
                     'is_recommended' => false,
                     'rating' => 6,
                     'review_content' => 'Main missions are excellent but some systems still feel rough around the edges.',
@@ -86,7 +84,6 @@ class GameReviewSeeder extends Seeder
             ],
             'Hades' => [
                 [
-                    'email' => 'sana.aziz@example.com',
                     'is_recommended' => true,
                     'rating' => 10,
                     'review_content' => 'Fast runs, polished combat, and constant progression hooks.',
@@ -105,25 +102,12 @@ class GameReviewSeeder extends Seeder
                 continue;
             }
 
-            foreach ($reviews as $review) {
-                //check if new seeder hours_played equals the hours_played of same user and same game in the database, if so skip to avoid duplicate reviews when running seeder multiple times
-                
-                
-                // 
-                $existingReview = DB::table('game_reviews')->where([
-                    'game_id' => $gameId,
-                    'user_id' => $usersByEmail->get($review['email']),
-                    'hours_played' => $review['hours_played'],
-                ])->first();
+            // Use a per-game shuffled user pool so assignments come from existing DB users.
+            $userPool = $userIds->shuffle()->values();
+            $poolSize = $userPool->count();
 
-                if ($existingReview) {
-                    continue;
-                }
-
-                $userId = $usersByEmail->get($review['email']);
-                if (! $userId) {
-                    continue;
-                }
+            foreach ($reviews as $index => $review) {
+                $userId = (int) $userPool[$index % $poolSize];
 
                 $rows[] = [
                     'game_id' => $gameId,
