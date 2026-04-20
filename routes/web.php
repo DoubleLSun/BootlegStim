@@ -61,6 +61,9 @@ Route::middleware(['auth'])->group(function () {
     // Game Library
     Route::get('/library', [LibraryController::class, 'libraryPage'])->name('library.libraryPage');
     Route::get('/library/{game}', [LibraryController::class, 'show'])->name('library.show');
+    Route::post('/library/{game}/install', [LibraryController::class, 'install'])->name('library.install');
+    Route::post('/library/{game}/play/start', [LibraryController::class, 'startPlay'])->name('library.play.start');
+    Route::post('/library/{game}/play/stop', [LibraryController::class, 'stopPlay'])->name('library.play.stop');
 
     // Payment / Checkout
     Route::get('/checkout', [PaymentController::class, 'paymentPage'])->name('payment.paymentPage');

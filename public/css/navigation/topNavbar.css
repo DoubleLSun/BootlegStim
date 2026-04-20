@@ -14,7 +14,7 @@
 
 .steam-nav-inner {
     width: auto;
-    margin: 0;
+    margin: 0 5%;
 }
 
 .steam-nav-upper,
@@ -49,7 +49,9 @@
 
 .steam-nav-link,
 .steam-nav-btn,
-.steam-nav-user {
+.steam-profile-menu-dropdown,
+.steam-nav-user,
+.nav-logout {
     border: 0;
     background: transparent;
     color: #c7d5e0;
@@ -68,19 +70,78 @@
 .steam-nav-btn:hover,
 .steam-nav-btn:focus-visible,
 .steam-nav-user:hover,
-.steam-nav-user:focus-visible {
+.steam-nav-user:focus-visible,
+.steam-profile-menu-dropdown:hover,
+.steam-profile-menu-dropdown:focus-visible,
+.nav-logout:hover,
+.nav-logout:focus-visible 
+{
     color: #66c0f4;
     background: rgba(102, 192, 244, 0.12);
     outline: none;
 }
 
 .steam-nav-upper .steam-nav-link,
-.steam-nav-upper .steam-nav-user {
+.steam-nav-upper .steam-nav-user,
+.steam-nav-upper .steam-profile-menu-dropdown {
     font-size: 1rem;
 }
 
-.steam-nav-user {
+.steam-profile-menu-dropdown {
+    display: flex;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    overflow: visible;
+}
+
+.steam-profile-label {
+    display: inline-flex;
+    align-items: center;
+}
+
+.steam-profile-menu-dropdown {
     margin-left: auto;
+}
+
+.steam-profile-menu-panel {
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    right: 0;
+    min-width: 170px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.35rem;
+    background: #1b2838;
+    border: 1px solid #29435a;
+    border-radius: 6px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
+    z-index: 1300;
+}
+
+.steam-profile-menu-dropdown:hover .steam-profile-menu-panel,
+.steam-profile-menu-dropdown:focus-within .steam-profile-menu-panel {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.steam-nav-user,
+.nav-logout {
+    display: block;
+    width: 100%;
+    text-align: left;
+    text-transform: none;
+    letter-spacing: 0.01em;
+    font-weight: 600;
+    padding: 0.5rem 0.6rem;
 }
 
 .steam-nav-lower .steam-nav-btn,

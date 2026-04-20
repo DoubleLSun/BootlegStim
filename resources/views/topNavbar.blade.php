@@ -13,7 +13,17 @@
 		<div class="steam-nav-upper">
 			<a class="steam-nav-link" href="{{ route('store.index') }}">Store</a>
 			<a class="steam-nav-link" href="{{ route('library.libraryPage') }}">Library</a>
-			<a class="steam-nav-user" href="{{ route('profile') }}">{{ $displayUserName }}</a>
+			<!-- dropdown profile menu -->
+			<div class="steam-profile-menu-dropdown" id="profileMenuDropdown">
+				<span class="steam-profile-label">{{ $displayUserName }}</span>
+				<div class="steam-profile-menu-panel" role="menu" aria-label="Profile menu">
+					<button class="steam-nav-user" onclick="window.location.href='{{ route('profile') }}'">Profile</button>
+					<form action="{{ route('logout') }}" method="POST" onsubmit="return confirm('Are you sure you want to log out?');">
+						@csrf
+						<button type="submit" class="nav-logout">Log Out</button>
+					</form>
+				</div>
+			</div>
 		</div>
 
 		<div class="steam-nav-lower-wrap" id="steamNavLowerWrap">
