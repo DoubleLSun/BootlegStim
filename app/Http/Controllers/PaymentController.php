@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\Game;
+use App\Models\UserCart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +12,36 @@ use Illuminate\Support\Str;
 class PaymentController extends Controller
 {
     /**
+     * Start checkout from cart via POST, then redirect to checkout page.
+     */
+    public function startCheckout(Request $request)
+    {
+        $user = Auth::user();
+        $cartItems = $user->userCarts()->with(['gamePricing.getGame.media'])->get();
+
+        if ($cartItems->isEmpty()) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Your cart is empty.',
+                ], 422);
+            }
+
+            return redirect()->route('cart.show')
+                ->with('error', 'Your cart is empty.');
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'redirect_url' => route('payment.paymentPage'),
+            ]);
+        }
+
+        return redirect()->route('payment.paymentPage');
+    }
+
+    /**
      * Display the checkout / payment page.
      */
     public function paymentPage()
@@ -19,15 +49,15 @@ class PaymentController extends Controller
         $user = Auth::user();
 
         // Fetch active cart items with their related game
-        $cartItems = $user->cartItems()->with('game')->get();
+        $cartItems = $user->userCarts()->with(['gamePricing.getGame.media'])->get();
 
         if ($cartItems->isEmpty()) {
-            return redirect()->route('products.index')
+            return redirect()->route('store.index')
                 ->with('info', 'Your cart is empty.');
         }
 
         // Price calculations
-        $subtotal      = $cartItems->sum(fn($item) => $item->game->price);
+        $subtotal      = $cartItems->sum(fn($item) => (float) $item->price);
         $discountPercent = session('promo_discount_percent', 0);
         $discount      = round($subtotal * ($discountPercent / 100), 2);
         $walletApplied = session('wallet_applied', 0);
@@ -53,14 +83,14 @@ class PaymentController extends Controller
         ]);
 
         $user      = Auth::user();
-        $cartItems = $user->cartItems()->with('game')->get();
+        $cartItems = $user->userCarts()->with(['gamePricing.getGame.media'])->get();
 
         if ($cartItems->isEmpty()) {
-            return redirect()->route('products.index')
+            return redirect()->route('store.index')
                 ->with('error', 'Your cart is empty.');
         }
 
-        $subtotal      = $cartItems->sum(fn($item) => $item->game->price);
+        $subtotal      = $cartItems->sum(fn($item) => (float) $item->price);
         $discountPercent = session('promo_discount_percent', 0);
         $discount      = round($subtotal * ($discountPercent / 100), 2);
         $walletApplied = session('wallet_applied', 0);
@@ -84,7 +114,7 @@ class PaymentController extends Controller
             // Attach each purchased game to the order and to the user's library
             foreach ($cartItems as $item) {
                 $order->games()->attach($item->game_id, [
-                    'price_paid' => $item->game->price,
+                    'price_paid' => $item->price,
                 ]);
 
                 // Add to user library (pivot: user_games)
@@ -104,7 +134,7 @@ class PaymentController extends Controller
             }
 
             // Clear the cart and session state
-            $user->cartItems()->delete();
+            $user->userCarts()->delete();
             session()->forget(['promo_code', 'promo_discount_percent', 'wallet_applied']);
 
             DB::commit();
@@ -112,10 +142,26 @@ class PaymentController extends Controller
             // Load purchased games for the success page
             $purchasedGames = $order->games;
 
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Payment successful.',
+                    'order_reference' => $order->reference,
+                    'redirect_url' => route('library.libraryPage'),
+                ]);
+            }
+
             return view('payment.success', compact('order', 'purchasedGames'));
 
         } catch (\Exception $e) {
             DB::rollBack();
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Payment processing failed. Please try again.',
+                ], 500);
+            }
 
             return back()->with('error', 'Payment processing failed. Please try again.');
         }
@@ -158,9 +204,9 @@ class PaymentController extends Controller
     public function toggleWallet()
     {
         $user      = Auth::user();
-        $cartItems = $user->cartItems()->with('game')->get();
+        $cartItems = $user->userCarts()->with(['gamePricing.getGame.media'])->get();
 
-        $subtotal      = $cartItems->sum(fn($item) => $item->game->price);
+        $subtotal      = $cartItems->sum(fn($item) => (float) $item->price);
         $discountPercent = session('promo_discount_percent', 0);
         $discount      = round($subtotal * ($discountPercent / 100), 2);
         $afterDiscount = $subtotal - $discount;

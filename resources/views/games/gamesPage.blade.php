@@ -104,7 +104,13 @@
 
             <section class="showcase-section" aria-label="Genres and tags">
                 <h3>Genres / Tags</h3>
-                <p>Placeholder: Genres and tags are not implemented yet.</p>
+                <div class="game-genre-row" title="Genres">
+                    @forelse($game->genres as $genre)
+                        <a class="game-genre-pill" href="{{ route('search.index', ['genres' => [$genre->id]]) }}">{{ $genre->name }}</a>
+                    @empty
+                        <span class="empty-note">No genres assigned yet.</span>
+                    @endforelse
+                </div>
             </section>
         </aside>
     </section>
@@ -176,28 +182,6 @@
             </article>
         </div>
 
-        <div class="review-list">
-            @if ($reviewCollection->isNotEmpty())
-                @foreach ($reviewCollection->take(4) as $review)
-                    <article class="review-item">
-                        <header>
-                            <strong>{{ optional($review->getUser)->name ?? 'Anonymous Player' }}</strong>
-                            <span class="review-badge {{ $review->is_recommended ? 'is-positive' : 'is-negative' }}">
-                                {{ $review->is_recommended ? 'Recommended' : 'Not Recommended' }}
-                            </span>
-                        </header>
-                        <p>{{ $review->review_content ?: 'No written comment provided.' }}</p>
-                        <footer>
-                            <span>{{ (int) ($review->hours_played ?? 0) }} hrs played</span>
-                            <span>{{ (int) ($review->helpful_votes ?? 0) }} found this helpful</span>
-                        </footer>
-                    </article>
-                @endforeach
-            @else
-                <p class="empty-note">No review rows found yet. Seed using: php artisan db:seed --class=GameReviewSeeder</p>
-            @endif
-        </div>
-
         <div class="review-composer" style="margin-top:1.5rem;">
             <h3>Leave a Comment</h3>
             @auth
@@ -213,12 +197,122 @@
                         placeholder="Share what you think about this game..."
                         required
                     >{{ old('review_content') }}</textarea>
+                    <label for="review_is_recommended" class="form-label" style="margin-top:0.75rem;display:block;">Recommendation</label>
+                    <select id="review_is_recommended" name="is_recommended" class="form-textarea" style="min-height:44px;">
+                        <option value="1" {{ old('is_recommended', '1') === '1' ? 'selected' : '' }}>Recommended</option>
+                        <option value="0" {{ old('is_recommended') === '0' ? 'selected' : '' }}>Not Recommended</option>
+                    </select>
+                    <input type="hidden" name="rating" value="{{ old('rating', 5) }}">
                     <button type="submit" class="btn-cart" style="margin-top:0.75rem;">Post Comment</button>
                 </form>
             @else
                 <p class="empty-note">Sign in to leave a comment on this game.</p>
             @endauth
         </div>
+
+        <div class="review-list">
+            @if ($reviewCollection->isNotEmpty())
+                @foreach ($reviewCollection as $review)
+                    <article class="review-item">
+                        <header>
+                            <strong>{{ optional($review->getUser)->name ?? 'Anonymous Player' }}</strong>
+                            <span class="review-badge {{ $review->is_recommended ? 'is-positive' : 'is-negative' }}">
+                                {{ $review->is_recommended ? 'Recommended' : 'Not Recommended' }}
+                            </span>
+                        </header>
+
+                        <p class="review-content" id="reviewContent-{{ $review->id }}">{{ $review->review_content ?: 'No written comment provided.' }}</p>
+
+                        @auth
+                            @php
+                                $isOwner = (int) $review->user_id === (int) auth()->id();
+                                $isAdmin = (string) (auth()->user()->role ?? '') === 'admin';
+                                $canManageReview = $isOwner || $isAdmin;
+                            @endphp
+
+                            @if($canManageReview)
+                                <div class="review-actions">
+                                    <button
+                                        type="button"
+                                        class="review-action-btn"
+                                        data-review-id="{{ $review->id }}"
+                                        onclick="toggleReviewEdit({{ $review->id }})"
+                                    >
+                                        Edit
+                                    </button>
+
+                                    <form action="{{ route('games.comments.delete', ['game' => $game, 'review' => $review]) }}" method="POST" onsubmit="return confirm('Delete this review? This cannot be undone.');">
+                                        @csrf
+                                        <button type="submit" class="review-action-btn review-delete-btn">Delete</button>
+                                    </form>
+                                </div>
+
+                                <form
+                                    id="reviewEditForm-{{ $review->id }}"
+                                    class="review-edit-form"
+                                    action="{{ route('games.comments.update', ['game' => $game, 'review' => $review]) }}"
+                                    method="POST"
+                                >
+                                    @csrf
+                                    <label for="review_edit_content_{{ $review->id }}" class="form-label">Edit comment</label>
+                                    <textarea
+                                        id="review_edit_content_{{ $review->id }}"
+                                        name="review_content"
+                                        rows="4"
+                                        maxlength="1000"
+                                        class="form-textarea"
+                                        required
+                                    >{{ $review->review_content }}</textarea>
+                                    <label for="review_edit_is_recommended_{{ $review->id }}" class="form-label" style="margin-top:0.75rem;display:block;">Recommendation</label>
+                                    <select id="review_edit_is_recommended_{{ $review->id }}" name="is_recommended" class="form-textarea" style="min-height:44px;">
+                                        <option value="1" {{ $review->is_recommended ? 'selected' : '' }}>Recommended</option>
+                                        <option value="0" {{ !$review->is_recommended ? 'selected' : '' }}>Not Recommended</option>
+                                    </select>
+                                    <input type="hidden" name="rating" value="{{ $review->rating ?? 5 }}">
+                                    <div class="review-edit-actions">
+                                        <button type="submit" class="btn-cart">Update</button>
+                                        <button type="button" class="review-action-btn" onclick="toggleReviewEdit({{ $review->id }})">Cancel</button>
+                                    </div>
+                                </form>
+                            @endif
+                        @endauth
+
+                        <footer>
+                            <span>{{ (int) ($review->hours_played ?? 0) }} hrs played</span>
+                            <div class="review-helpful-wrap">
+                                @auth
+                                    <form action="{{ route('games.comments.helpful', ['game' => $game, 'review' => $review]) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="helpful-vote-btn" title="Mark as helpful" aria-label="Mark review as helpful">
+                                            <span>👍</span>
+                                            <span>Helpful</span>
+                                        </button>
+                                    </form>
+                                @endauth
+                                <span>{{ (int) ($review->helpful_votes ?? 0) }} found this helpful</span>
+                            </div>
+                        </footer>
+                    </article>
+                @endforeach
+            @else
+                <p class="empty-note">No review rows found yet. Seed using: php artisan db:seed --class=GameReviewSeeder</p>
+            @endif
+        </div>
+
+        
     </section>
 </main>
+
+<script>
+    function toggleReviewEdit(reviewId) {
+        const form = document.getElementById(`reviewEditForm-${reviewId}`);
+        const content = document.getElementById(`reviewContent-${reviewId}`);
+
+        if (!form || !content) return;
+
+        const isOpen = form.classList.contains('is-open');
+        form.classList.toggle('is-open', !isOpen);
+        content.classList.toggle('is-hidden', !isOpen);
+    }
+</script>
 @endsection

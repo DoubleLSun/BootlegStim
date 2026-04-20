@@ -29,7 +29,7 @@ export default function CartItems({ items, onRemoveItem, onUpdateQuantity }) {
                     </div>
 
                     <div className="cart-item-quantity">
-                        <label htmlFor={`qty-${item.pricing_id}`}>Quantity:</label>
+                        <label className="form-label" htmlFor={`qty-${item.pricing_id}`}>Quantity:</label>
                         <input
                             id={`qty-${item.pricing_id}`}
                             type="number"

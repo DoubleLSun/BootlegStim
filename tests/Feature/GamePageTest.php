@@ -69,6 +69,8 @@ class GamePageTest extends TestCase
 
         $response = $this->actingAs($user)->post(route('games.comments.store', $game), [
             'review_content' => 'Solid game and fun loop.',
+            'is_recommended' => 1,
+            'rating' => 5,
         ]);
 
         $response->assertRedirect();

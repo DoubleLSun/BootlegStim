@@ -29,7 +29,7 @@
 
         <div class="game-list" id="gameList">
             @foreach($games as $game)
-            <a href="{{ route('library.show', $game->id) }}"
+            <a href="{{ route('library.show', $game) }}"
                class="game-list-item {{ isset($selectedGame) && $selectedGame->id === $game->id ? 'active' : '' }}"
                data-name="{{ strtolower($game->title) }}"
                data-installed="{{ $game->pivot->is_installed ?? 0 }}">
@@ -75,7 +75,7 @@
             <h3 class="section-title">Recently Played</h3>
             <div class="recent-games-strip">
                 @foreach($recentGames as $game)
-                <a href="{{ route('library.show', $game->id) }}" class="recent-card">
+                <a href="{{ route('library.show', $game) }}" class="recent-card">
                     <img src="{{ $game->cover_image }}" alt="{{ $game->title }}">
                     <div class="recent-card-footer">
                         <div class="recent-card-name">{{ $game->title }}</div>
@@ -106,6 +106,9 @@
         {{-- Grid View --}}
         <div class="games-grid" id="gamesGrid">
             @foreach($games as $game)
+            @php
+                $isPlaying = session()->has('library.playing.' . $user->id . '.' . $game->id);
+            @endphp
             <a href="{{ route('library.show', $game->id) }}" class="game-grid-card"
                data-name="{{ strtolower($game->title) }}"
                data-installed="{{ $game->pivot->is_installed ?? 0 }}">
@@ -113,8 +116,23 @@
                      src="{{ $game->cover_image }}"
                      alt="{{ $game->title }}">
                 <div class="card-overlay">
-                    <button class="card-overlay-btn">
-                        {{ ($game->pivot->is_installed ?? false) ? 'Play' : 'Install' }}
+                    <button
+                        type="button"
+                        class="card-overlay-btn library-action-btn"
+                        data-game-id="{{ $game->id }}"
+                        data-installed="{{ ($game->pivot->is_installed ?? false) ? '1' : '0' }}"
+                        data-playing="{{ $isPlaying ? '1' : '0' }}"
+                        data-install-url="{{ route('library.install', $game) }}"
+                        data-start-url="{{ route('library.play.start', $game) }}"
+                        data-stop-url="{{ route('library.play.stop', $game) }}"
+                    >
+                        @if(!($game->pivot->is_installed ?? false))
+                            Install
+                        @elseif($isPlaying)
+                            Stop
+                        @else
+                            Play
+                        @endif
                     </button>
                 </div>
                 <div class="game-card-body">
@@ -138,7 +156,7 @@
                 <span style="width:80px;text-align:right;">Status</span>
             </div>
             @foreach($games as $game)
-            <a href="{{ route('library.show', $game->id) }}" class="list-game-row"
+            <a href="{{ route('library.show', $game) }}" class="list-game-row"
                data-name="{{ strtolower($game->title) }}"
                data-installed="{{ $game->pivot->is_installed ?? 0 }}">
                 <img class="list-thumb"
@@ -160,6 +178,68 @@
 
 
 <script>
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+    async function postLibraryAction(url) {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json',
+            },
+        });
+
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok || payload.success === false) {
+            throw new Error(payload.message || 'Action failed.');
+        }
+
+        return payload;
+    }
+
+    document.querySelectorAll('.library-action-btn').forEach(btn => {
+        btn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (this.dataset.busy === '1') return;
+            this.dataset.busy = '1';
+
+            const isInstalled = this.dataset.installed === '1';
+            const isPlaying = this.dataset.playing === '1';
+            const originalText = this.textContent.trim();
+
+            try {
+                if (!isInstalled) {
+                    this.disabled = true;
+                    this.textContent = 'Installing...';
+
+                    await new Promise(resolve => setTimeout(resolve, 2500));
+                    await postLibraryAction(this.dataset.installUrl);
+                    alert('Installation complete.');
+                    window.location.reload();
+                    return;
+                }
+
+                if (!isPlaying) {
+                    await postLibraryAction(this.dataset.startUrl);
+                    this.dataset.playing = '1';
+                    this.textContent = 'Stop';
+                } else {
+                    await postLibraryAction(this.dataset.stopUrl);
+                    alert('Play session ended.');
+                    window.location.reload();
+                }
+            } catch (err) {
+                alert(err.message || 'Action failed.');
+                this.textContent = originalText;
+            } finally {
+                this.disabled = false;
+                this.dataset.busy = '0';
+            }
+        });
+    });
+
     // View toggle
     const grid = document.getElementById('gamesGrid');
     const list = document.getElementById('gamesList');

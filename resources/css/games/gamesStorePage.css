@@ -372,9 +372,91 @@ body {
     line-height: 1.45;
 }
 
+.review-content.is-hidden {
+    display: none;
+}
+
+.review-actions {
+    display: flex;
+    gap: 0.45rem;
+    margin-bottom: 0.65rem;
+}
+
+.review-action-btn {
+    border: 1px solid #2b4d67;
+    background: #1a2f42;
+    color: #c7d5e0;
+    border-radius: 4px;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.review-action-btn:hover,
+.review-action-btn:focus-visible {
+    border-color: #66c0f4;
+    color: #66c0f4;
+    outline: none;
+}
+
+.review-delete-btn {
+    border-color: #66333a;
+    background: #3a1e23;
+    color: #ff9a9a;
+}
+
+.review-delete-btn:hover,
+.review-delete-btn:focus-visible {
+    border-color: #ff7676;
+    color: #ffb3b3;
+}
+
+.review-edit-form {
+    display: none;
+    margin-bottom: 0.7rem;
+}
+
+.review-edit-form.is-open {
+    display: block;
+}
+
+.review-edit-actions {
+    display: flex;
+    gap: 0.55rem;
+    margin-top: 0.65rem;
+}
+
 .review-item footer {
     color: var(--ink-soft);
     font-size: 0.85rem;
+}
+
+.review-helpful-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.helpful-vote-btn {
+    border: 1px solid #2b4d67;
+    background: #173047;
+    color: #c7d5e0;
+    border-radius: 999px;
+    padding: 0.22rem 0.58rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    cursor: pointer;
+}
+
+.helpful-vote-btn:hover,
+.helpful-vote-btn:focus-visible {
+    border-color: #66c0f4;
+    color: #66c0f4;
+    outline: none;
 }
 
 .review-badge {
@@ -394,6 +476,33 @@ body {
 .review-badge.is-negative {
     color: #ff8a8a;
     background: #4a1f24;
+}
+
+.game-genre-row {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 0.45rem;
+    padding-bottom: 0.25rem;
+}
+
+.game-genre-pill {
+    flex: 0 0 auto;
+    text-decoration: none;
+    border: 1px solid #2b4d67;
+    background: #1a2f42;
+    color: #c7d5e0;
+    border-radius: 999px;
+    padding: 0.2rem 0.58rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.game-genre-pill:hover,
+.game-genre-pill:focus-visible {
+    border-color: #66c0f4;
+    color: #66c0f4;
+    outline: none;
 }
 
 @keyframes reveal {

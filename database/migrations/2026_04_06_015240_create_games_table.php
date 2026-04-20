@@ -32,6 +32,9 @@ class CreateGamesTable extends Migration
                 $table->decimal('price', 10, 2);
                 $table->date('release_date');
                 $table->boolean('is_featured')->default(false);
+                $table->boolean('is_delisted')->default(false);
+                $table->boolean('use_pricing_tag')->default(false);
+                $table->unsignedBigInteger('selected_pricing_id')->nullable();
                 $table->unsignedBigInteger('created_by');
                 $table->unsignedBigInteger('developer_id');
                 $table->unsignedBigInteger('publisher_id');

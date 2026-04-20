@@ -3,6 +3,7 @@
 @section('title', 'Cart | BootlegStim')
 @section('main-class', '')
 
+<!-- force use css/cart/cartPage.css-->
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/cart/cartPage.css') }}">
 @endpush

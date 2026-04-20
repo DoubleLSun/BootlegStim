@@ -90,10 +90,16 @@ class User extends Authenticatable
         return $this->hasMany(\App\Models\Order::class);
     }
 
-    /** Cart items. */
+    /** Cart rows stored in user_carts. */
+    public function userCarts()
+    {
+        return $this->hasMany(\App\Models\UserCart::class, 'user_id');
+    }
+
+    /** Backwards-compatible alias for older code paths. */
     public function cartItems()
     {
-        return $this->hasMany(\App\Models\CartItem::class);
+        return $this->userCarts();
     }
 
     // ── Accessors ────────────────────────────────────────────────────────────

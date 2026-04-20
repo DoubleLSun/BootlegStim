@@ -190,12 +190,20 @@
 
             <div class="purchased-games">
                 @foreach($purchasedGames as $game)
+                @php
+                    $coverMedia = $game->media->firstWhere('is_cover', true) ?? $game->media->first();
+                    $thumbnail = optional($coverMedia)->thumbnail_url
+                        ?? optional($coverMedia)->url
+                        ?? $game->cover_image
+                        ?? asset('img/placeholder_game.jpg');
+                    $pricePaid = $game->pivot->price_paid ?? $game->price ?? 0;
+                @endphp
                 <div class="purchased-game-row">
                     <img class="pg-thumb"
-                         src="{{ $game->thumbnail_url ?? asset('img/placeholder_game.jpg') }}"
-                         alt="{{ $game->name }}">
-                    <span class="pg-name">{{ $game->name }}</span>
-                    <span class="pg-price">RM {{ number_format($game->price, 2) }}</span>
+                         src="{{ $thumbnail }}"
+                         alt="{{ $game->title }} cover image">
+                    <span class="pg-name">{{ $game->title }}</span>
+                    <span class="pg-price">RM {{ number_format($pricePaid, 2) }}</span>
                 </div>
                 @endforeach
             </div>
@@ -208,8 +216,8 @@
             </div>
 
             <div class="success-actions">
-                <a href="{{ route('library.index') }}" class="btn-library">Go to Library</a>
-                <a href="{{ route('products.index') }}" class="btn-store">Continue Shopping</a>
+                <a href="{{ route('library.libraryPage') }}" class="btn-library">Go to Library</a>
+                <a href="{{ route('store.index') }}" class="btn-store">Continue Shopping</a>
             </div>
         </div>
     </div>

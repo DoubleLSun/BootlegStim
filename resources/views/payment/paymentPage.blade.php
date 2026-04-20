@@ -42,21 +42,30 @@
                     <div class="section-box-body">
 
                         @forelse($cartItems as $item)
+                        @php
+                            $pricing = $item->gamePricing;
+                            $game = $pricing ? $pricing->getGame : null;
+                            $coverMedia = $game ? $game->media->firstWhere('is_cover', true) : null;
+                            $thumbnail = optional($coverMedia)->thumbnail_url
+                                ?? optional($coverMedia)->url
+                                ?? ($game->cover_image ?? asset('img/placeholder_game.jpg'));
+                            $gameTitle = $game->title ?? 'Unknown Game';
+                        @endphp
                         <div class="order-item">
                             <img class="order-item-img"
-                                 src="{{ $item->game->thumbnail_url ?? asset('img/placeholder_game.jpg') }}"
-                                 alt="{{ $item->game->name }}">
+                                 src="{{ $thumbnail }}"
+                                 alt="{{ $gameTitle }}">
                             <div class="order-item-info">
-                                <p class="order-item-name">{{ $item->game->name }}</p>
+                                <p class="order-item-name">{{ $gameTitle }}</p>
                                 <span class="order-item-type">Standard Edition &mdash; Digital</span>
                             </div>
                             <div class="order-item-price">
-                                @if($item->game->discount_percent > 0)
+                                @if($pricing && (float) $pricing->discount_percentage > 0)
                                     <span style="text-decoration:line-through;color:#8f98a0;font-size:12px;font-weight:400;display:block;">
-                                        RM {{ number_format($item->game->original_price, 2) }}
+                                        RM {{ number_format($item->price / max(0.01, (1 - ((float) $pricing->discount_percentage / 100))), 2) }}
                                     </span>
                                 @endif
-                                RM {{ number_format($item->game->price, 2) }}
+                                RM {{ number_format($item->price, 2) }}
                             </div>
                             <button class="order-item-remove"
                                     onclick="removeItem({{ $item->id }})"

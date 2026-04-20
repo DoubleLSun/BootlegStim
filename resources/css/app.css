@@ -1,6 +1,8 @@
-@import 'navigation/topNavbar.css';
 @import 'games/gamesStorePage.css';
 @import 'profile/profilePage.css';
+/* @import 'cart/cartPage.css';
+@import 'library/libraryPage.css';
+@import 'store/index.css'; */
 
 :root {
 	--app-text: #c7d5e0;

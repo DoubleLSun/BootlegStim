@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 export default function CartSummary({ totalPrice, totalItems, itemCount }) {
     const [isSticky, setIsSticky] = useState(false);
+    const [processing, setProcessing] = useState(false);
 
     // Handle sticky positioning on scroll
     useEffect(() => {
@@ -16,6 +17,32 @@ export default function CartSummary({ totalPrice, totalItems, itemCount }) {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    const redirectToCheckout = async () => {
+        if (processing) return;
+        setProcessing(true);
+
+        try {
+            const response = await axios.post(
+                '/checkout',
+                {},
+                { headers: { Accept: 'application/json' } }
+            );
+
+            if (response.data?.redirect_url) {
+                window.location.href = response.data.redirect_url;
+                return;
+            }
+
+            window.location.href = '/checkout';
+        } catch (error) {
+            console.error('Checkout failed:', error);
+            alert(error?.response?.data?.message || 'Checkout failed. Please try again.');
+        } finally {
+            setProcessing(false);
+        }
+    };
+    
 
     return (
         <div className={`cart-summary-container ${isSticky ? 'sticky' : ''}`}>
@@ -47,8 +74,11 @@ export default function CartSummary({ totalPrice, totalItems, itemCount }) {
 
                 <div className="summary-divider"></div>
 
-                <button className="btn btn-proceed-to-payment">
-                    Proceed to Payment
+                <button className="btn btn-proceed-to-payment"
+                onClick={redirectToCheckout}
+                disabled={processing || totalItems === 0}
+                >
+                    {processing ? 'Processing...' : 'Proceed to Payment'}
                 </button>
 
                 <div className="summary-note">

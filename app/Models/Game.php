@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Game extends Model
 {
@@ -39,6 +40,9 @@ class Game extends Model
         'price',
         'release_date',
         'is_featured',
+        'is_delisted',
+        'use_pricing_tag',
+        'selected_pricing_id',
         'created_by',
         'developer_id',
         'publisher_id',
@@ -53,6 +57,8 @@ class Game extends Model
     protected $casts = [
         'release_date' => 'date',
         'is_featured'  => 'boolean',
+        'is_delisted'  => 'boolean',
+        'use_pricing_tag' => 'boolean',
         'price'        => 'decimal:2',
     ];
 
@@ -80,5 +86,13 @@ class Game extends Model
     public function getGamePricing()
     {
         return $this->hasMany(\App\Models\GamePricing::class);
+    }
+
+    /**
+     * Game belongsToMany GameGenre (normalized many-to-many via pivot table).
+     */
+    public function genres(): BelongsToMany
+    {
+        return $this->belongsToMany(GameGenre::class, 'game_genre_game', 'game_id', 'genre_id');
     }
 }

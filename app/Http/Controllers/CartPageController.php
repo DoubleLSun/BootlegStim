@@ -22,6 +22,8 @@ class CartPageController extends Controller
     }
 
     /**
+     * snapshot means the current state of the cart, 
+     * including items, quantities, prices, and totals
      * Return cart snapshot for React page initialization.
      */
     public function data(Request $request)
@@ -109,7 +111,7 @@ class CartPageController extends Controller
     {
         $cartRows = UserCart::query()
             ->where('user_id', $userId)
-            ->with(['gamePricing.getGame.getMedia'])
+            ->with(['gamePricing.getGame.media'])
             ->get();
 
         $grouped = $cartRows->groupBy('game_pricing_id');
@@ -117,7 +119,7 @@ class CartPageController extends Controller
             $row = $rows->first();
             $pricing = $row->gamePricing;
             $game = $pricing ? $pricing->getGame : null;
-            $coverImage = $game ? $game->getMedia->firstWhere('is_cover', true) : null;
+            $coverImage = $game ? $game->media()->firstWhere('is_cover', true) : null;
 
             $effectivePrice = $pricing ? (float) $pricing->price : (float) $row->price;
             $discountPercent = $pricing ? (float) $pricing->discount_percentage : 0;
@@ -134,7 +136,7 @@ class CartPageController extends Controller
                 'price' => $effectivePrice,
                 'discount_percentage' => $discountPercent,
                 'original_price' => $originalPrice,
-                'cover_image' => $coverImage ? asset('storage/' . $coverImage->file_path) : asset('images/placeholder.jpg'),
+                'cover_image' => $coverImage ? $coverImage->url : asset('images/placeholder.jpg'),
                 'quantity' => $rows->count(),
             ];
         })->values();

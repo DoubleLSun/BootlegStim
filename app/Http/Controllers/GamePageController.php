@@ -13,6 +13,10 @@ class GamePageController extends Controller
 {
     public function show(Request $request, Game $game)
     {
+        if ($game->is_delisted && (!auth()->check() || (string) (auth()->user()->role ?? '') !== 'admin')) {
+            abort(404);
+        }
+
         // Load the media items and reviews for the game
         $game->load([
             'media' => function ($query) {
@@ -26,6 +30,9 @@ class GamePageController extends Controller
                     ->orderByDesc('review_date')
                     ->orderByDesc('helpful_votes')
                     ->orderByDesc('id');
+            },
+            'genres' => function ($query) {
+                $query->where('display_flag', true)->orderBy('name');
             },
         ]);
 
@@ -57,9 +64,22 @@ class GamePageController extends Controller
         // Use the URL of the active media if available, otherwise fall back to the default image
         $selectedImage = optional($activeMedia)->url ?? $defaultImage;
 
-        $pricingRow = DB::table('game_pricings')
-            ->where('game_id', $game->id)
-            ->first();
+        $pricingRow = null;
+        if ($game->use_pricing_tag) {
+            if (!empty($game->selected_pricing_id)) {
+                $pricingRow = DB::table('game_pricings')
+                    ->where('id', $game->selected_pricing_id)
+                    ->where('game_id', $game->id)
+                    ->first();
+            }
+
+            if (!$pricingRow) {
+                $pricingRow = DB::table('game_pricings')
+                    ->where('game_id', $game->id)
+                    ->orderBy('id')
+                    ->first();
+            }
+        }
 
         $originalPrice = $pricingRow->price ?? $game->price ?? 0;
         $discountedPrice = $pricingRow->discounted_price ?? null;
@@ -92,6 +112,7 @@ class GamePageController extends Controller
             'has_discount' => $hasDiscount,
             'discount_percent' => $pricingRow->discount_percentage ?? null,
             'discounted_price' => $hasDiscount ? (float) $discountedPrice : null,
+            'is_applied' => (bool) $game->use_pricing_tag,
         ];
         
         // Pass the game, media items, selected image, and active thumbnail ID to the view
@@ -148,6 +169,8 @@ class GamePageController extends Controller
     {
         $validated = $request->validate([
             'review_content' => 'required|string|max:1000',
+            'is_recommended' => 'required|boolean',
+            'rating' => 'required|integer|min:1|max:5',
         ]);
 
         $review = GameReview::firstOrNew([
@@ -158,14 +181,78 @@ class GamePageController extends Controller
         if (!$review->exists) {
             $review->hours_played = 0;
             $review->helpful_votes = 0;
-            $review->rating = null;
         }
 
         $review->review_content = $validated['review_content'];
-        $review->is_recommended = true;
+        $review->is_recommended = (bool) $validated['is_recommended'];
+        $review->rating = (int) $validated['rating'];
         $review->review_date = now();
         $review->save();
 
         return back()->with('success', 'Your comment was posted.');
+    }
+
+    public function updateComment(Request $request, Game $game, GameReview $review)
+    {
+        if ((int) $review->game_id !== (int) $game->id) {
+            abort(404);
+        }
+
+        if (!$this->canManageReview($request, $review)) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'review_content' => 'required|string|max:1000',
+            'is_recommended' => 'required|boolean',
+            'rating' => 'required|integer|min:1|max:5',
+        ]);
+
+        $review->review_content = $validated['review_content'];
+        $review->is_recommended = (bool) $validated['is_recommended'];
+        $review->rating = (int) $validated['rating'];
+        $review->review_date = now();
+        $review->save();
+
+        return back()->with('success', 'Review updated successfully.');
+    }
+
+    public function deleteComment(Request $request, Game $game, GameReview $review)
+    {
+        if ((int) $review->game_id !== (int) $game->id) {
+            abort(404);
+        }
+
+        if (!$this->canManageReview($request, $review)) {
+            abort(403);
+        }
+
+        $review->delete();
+
+        return back()->with('success', 'Review deleted successfully.');
+    }
+
+    public function markHelpful(Request $request, Game $game, GameReview $review)
+    {
+        if ((int) $review->game_id !== (int) $game->id) {
+            abort(404);
+        }
+
+        $review->increment('helpful_votes');
+
+        return back()->with('success', 'Thanks for your feedback. Helpful vote recorded.');
+    }
+
+    private function canManageReview(Request $request, GameReview $review): bool
+    {
+        $user = $request->user();
+        if (!$user) {
+            return false;
+        }
+
+        $isOwner = (int) $review->user_id === (int) $user->id;
+        $isAdmin = (string) ($user->role ?? '') === 'admin';
+
+        return $isOwner || $isAdmin;
     }
 }
